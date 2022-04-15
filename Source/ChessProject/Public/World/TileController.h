@@ -23,10 +23,6 @@ protected:
 	UPROPERTY( BlueprintReadWrite, Category="Tiles")
 	TArray<ATile*> Tiles;
 
-	UFUNCTION(BlueprintCallable)
-	void GenerateTiles();
-
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Board)
 	int32 Cols;
 
@@ -41,18 +37,19 @@ protected:
 
 
 	/////////////// Defer Spawn ///////////////
-	FTimerHandle ColHandle;
-	FTimerHandle RowHandle;
-	int32 CurrentCol;
-	int32 CurrentRow;
-
-	void HandleCol();
-	void HandleRow();
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=SpawnTime)
-	float Timer = 1.5f;
-	
 	UFUNCTION(BlueprintCallable)
 	void GenerateTilesDefer();
+	UFUNCTION(BlueprintCallable)
+	void GenerateTiles();
+	
+	void GenerateTile();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=SpawnTime)
+	float Timer = 0.15f;
+	
+	FTimerHandle Handle;
+	
+	int32 CurrentCol;
+	int32 CurrentRow;
 	/////////////// Defer Spawn ///////////////
 };
