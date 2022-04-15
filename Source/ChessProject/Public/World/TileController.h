@@ -6,12 +6,14 @@
 #include "GameFramework/Actor.h"
 #include "TileController.generated.h"
 
+class ATile;
+
 UCLASS()
 class CHESSPROJECT_API ATileController : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ATileController();
 
@@ -19,8 +21,15 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Tiles")
+	TArray<ATile*> Tiles;
 
+	UFUNCTION(BlueprintCallable)
+	void GenerateTiles();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Board)
+	int32 Cols;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Board)
+	int32 Rows;
 };
