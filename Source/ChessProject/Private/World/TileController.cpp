@@ -24,11 +24,10 @@ void ATileController::GenerateTiles()
 	{
 		return;
 	}
-	
+
 	ETileColour Colour = ETileColour::White;
 	for (int32 Col = 0; Col < Cols; Col++)
 	{
-		Colour = Colour == ETileColour::White ? ETileColour::Black : ETileColour::White;
 		for (int32 Row = 0; Row < Rows; Row++)
 		{
 			ETeams Team = ETeams::Neutral;
@@ -52,6 +51,70 @@ void ATileController::GenerateTiles()
 				Transform.SetLocation(FVector(Width * Col, Width * Row, 0.f));
 				Tile->FinishSpawn(Transform);
 			}
+		}
+	}
+}
+
+void ATileController::GenerateTilesDefer()
+{
+	GetWorld()->GetTimerManager().SetTimer<ATileController>(
+		ColHandle,
+		this,
+		&ATileController::HandleCol,
+		Timer * Rows + 0.1f,
+		true,
+		0.f
+	);
+}
+
+
+void ATileController::HandleCol()
+{
+	CurrentColour = CurrentColour == ETileColour::White ? ETileColour::Black : ETileColour::White;
+	CurrentRow = 0;
+	GetWorld()->GetTimerManager().SetTimer<ATileController>(
+		RowHandle,
+		this,
+		&ATileController::HandleRow,
+		Timer,
+		true,
+		Timer
+	);
+}
+
+void ATileController::HandleRow()
+{
+	CurrentColour = CurrentColour == ETileColour::White ? ETileColour::Black : ETileColour::White;
+
+	ETeams Team = ETeams::Neutral;
+	if (CurrentRow == 0 || CurrentRow == 1)
+	{
+		Team = ETeams::Red;
+	}
+	if (CurrentRow == 6 || CurrentRow == 7)
+	{
+		Team = ETeams::Blue;
+	}
+	if (ATile* Tile = ATile::StartSpawnActor(this, TileClass); Tile != nullptr)
+	{
+		Tile->Team = Team;
+		Tile->TileColour = CurrentColour;
+		Tile->TileController = this;
+
+		FTransform Transform;
+		Transform.SetRotation(FQuat(0.f, 0.f, 0.f, 0.f));
+		Transform.SetLocation(FVector(Width * CurrentCol, Width * CurrentRow, 0.f));
+		Tile->FinishSpawn(Transform);
+	}
+
+	CurrentRow++;
+	if (CurrentRow == Rows)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(RowHandle);
+		CurrentCol++;
+		if (CurrentCol == Cols)
+		{
+			GetWorld()->GetTimerManager().ClearTimer(ColHandle);
 		}
 	}
 }

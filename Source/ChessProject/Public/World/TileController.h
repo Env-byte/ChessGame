@@ -3,10 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Tile.h"
 #include "GameFramework/Actor.h"
 #include "TileController.generated.h"
-
-class ATile;
 
 UCLASS()
 class CHESSPROJECT_API ATileController : public AActor
@@ -21,21 +20,40 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Tiles")
+	UPROPERTY( BlueprintReadWrite, Category="Tiles")
 	TArray<ATile*> Tiles;
 
 	UFUNCTION(BlueprintCallable)
 	void GenerateTiles();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Board)
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Board)
 	int32 Cols;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Board)
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Board)
 	int32 Rows;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=TileWidth)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=TileWidth)
 	float Width = 0.f;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Board)
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Board)
 	TSubclassOf<ATile> TileClass;
+
+
+	/////////////// Defer Spawn ///////////////
+	FTimerHandle ColHandle;
+	FTimerHandle RowHandle;
+	int32 CurrentCol;
+	int32 CurrentRow;
+	ETileColour CurrentColour = ETileColour::White;
+
+	void HandleCol();
+	void HandleRow();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=SpawnTime)
+	float Timer = 1.5f;
+	
+	UFUNCTION(BlueprintCallable)
+	void GenerateTilesDefer();
+	/////////////// Defer Spawn ///////////////
 };
