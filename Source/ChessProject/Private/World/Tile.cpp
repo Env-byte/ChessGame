@@ -45,3 +45,30 @@ void ATile::BeginPlay()
 {
 	Super::BeginPlay();
 }
+
+void ATile::OnRep_ChessPawn()
+{
+	//can be used to correct incorrect changes to the game. such as the piece moving on client when its not valid on server
+}
+
+void ATile::SetChessPawn(AChessPawn* Pawn)
+{
+	if (!Pawn->HasAuthority())
+	{
+		//this is client
+		Server_SetChessPawn(Pawn);
+		// we don not return as we want this to happen simultaneously between client / server
+	}else
+	{
+		//this is server
+		//we can validated the move here and correct inconsistency using OnRep_ChessPawn
+	}
+	ChessPawn = Pawn;
+
+	
+}
+
+void ATile::Server_SetChessPawn_Implementation(AChessPawn* Pawn)
+{
+	SetChessPawn(Pawn);
+}

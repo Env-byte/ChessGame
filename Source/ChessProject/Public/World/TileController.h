@@ -16,11 +16,15 @@ public:
 	// Sets default values for this actor's properties
 	ATileController();
 
+	FORCEINLINE bool BoardIsLoaded() const { return bIsLoaded; };
+
 protected:
+	bool bIsLoaded = false;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY( BlueprintReadWrite, Category="Tiles")
+	UPROPERTY(BlueprintReadWrite, Category="Tiles")
 	TArray<ATile*> Tiles;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Board)
@@ -38,17 +42,15 @@ protected:
 
 	/////////////// Defer Spawn ///////////////
 	UFUNCTION(BlueprintCallable)
-	void GenerateTilesDefer();
-	UFUNCTION(BlueprintCallable)
 	void GenerateTiles();
-	
+
 	void GenerateTile();
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=SpawnTime)
 	float TimerScale = 0.005f;
-	
+
 	FTimerHandle Handle;
-	
+
 	int32 CurrentCol;
 	int32 CurrentRow;
 	/////////////// Defer Spawn ///////////////

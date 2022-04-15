@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ChessPawn.h"
 #include "ChessProject/ChessProject.h"
 #include "GameFramework/Actor.h"
 #include "Tile.generated.h"
@@ -47,6 +48,36 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Static)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Component)
 	UStaticMeshComponent* StaticMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=ChessPiece, ReplicatedUsing=OnRep_ChessPawn)
+	AChessPawn* ChessPawn = nullptr;
+
+	/**
+	 * Called when the ChessPawn for the server instance of this tile changes and is replicated down.
+	 * This is only ever executed on client side version of the game
+	 * Never runs on server
+	 */
+	UFUNCTION()
+	void OnRep_ChessPawn();
+public:
+	/**
+	 * Used to set the ChessPawn for this tile
+	 * This only happens on the server
+	 * If called from client, the Remote Procedure Call (RPC) Server_SetChessPawn
+	 * is called which routes this function to be called on the Server
+	 */
+	UFUNCTION(BlueprintCallable)
+	void SetChessPawn(AChessPawn* Pawn);
+
+private:
+	/**
+	 * Makes a call to the server to execute SetChessPawn
+	 * Server functions are implemented as Server_SetChessPawn_Implementation
+	 * Private as this should never be called outside of class
+	 */
+	UFUNCTION(Server, Reliable)
+	void Server_SetChessPawn(AChessPawn* Pawn);
+	
 };

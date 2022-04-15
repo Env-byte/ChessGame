@@ -18,11 +18,6 @@ void ATileController::BeginPlay()
 	Super::BeginPlay();
 }
 
-void ATileController::GenerateTilesDefer()
-{
-	GenerateTiles();
-}
-
 void ATileController::GenerateTiles()
 {
 	if (!TileClass)
@@ -50,9 +45,13 @@ void ATileController::GenerateTiles()
 
 void ATileController::GenerateTile()
 {
-	const ETeams Team = CurrentRow == 0 || CurrentRow == 1 ? ETeams::Red : CurrentRow == 6 || CurrentRow == 7 ? ETeams::Blue : ETeams::Neutral;
+	const ETeams Team = CurrentRow == 0 || CurrentRow == 1
+		                    ? ETeams::Red
+		                    : CurrentRow == 6 || CurrentRow == 7
+		                    ? ETeams::Blue
+		                    : ETeams::Neutral;
 	const ETileColour Colour = (CurrentRow + CurrentCol + 1) % 2 == 0 ? ETileColour::White : ETileColour::Black;
-			
+
 	if (ATile* Tile = ATile::StartSpawnActor(this, TileClass); Tile != nullptr)
 	{
 		Tile->Team = Team;
@@ -71,10 +70,11 @@ void ATileController::GenerateTile()
 	{
 		CurrentCol += 1;
 		CurrentRow = 0;
-		
+
 		if (CurrentCol == Cols)
 		{
 			GetWorld()->GetTimerManager().ClearTimer(Handle);
+			bIsLoaded = true;
 		}
 	}
 }
