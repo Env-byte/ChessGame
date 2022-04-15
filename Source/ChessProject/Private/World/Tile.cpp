@@ -57,7 +57,9 @@ void ATile::SetChessPawn(AChessPawn* Pawn)
 	{
 		//this is client
 		Server_SetChessPawn(Pawn);
-		// we don not return as we want this to happen simultaneously between client / server
+		// we do not return as we want changes to happen simultaneously between client / server
+		// otherwise it would give the impression of lag
+		
 	}else
 	{
 		//this is server
