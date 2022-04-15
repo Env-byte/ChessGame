@@ -28,25 +28,11 @@ void ATileController::GenerateTiles()
 	ETileColour Colour = ETileColour::White;
 	for (int32 Col = 0; Col < Cols; Col++)
 	{
-		if (Colour == ETileColour::White)
-		{
-			Colour = ETileColour::Black;
-		}
-		else
-		{
-			Colour = ETileColour::White;
-		}
+		Colour = Colour == ETileColour::White ? ETileColour::Black : ETileColour::White;
 		for (int32 Row = 0; Row < Rows; Row++)
 		{
 			ETeams Team = ETeams::Neutral;
-			if (Colour == ETileColour::White)
-			{
-				Colour = ETileColour::Black;
-			}
-			else
-			{
-				Colour = ETileColour::White;
-			}
+			Colour = Colour == ETileColour::White ? ETileColour::Black : ETileColour::White;
 			if (Row == 0 || Row == 1)
 			{
 				Team = ETeams::Red;
