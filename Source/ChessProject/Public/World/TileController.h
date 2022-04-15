@@ -45,7 +45,6 @@ protected:
 	FTimerHandle RowHandle;
 	int32 CurrentCol;
 	int32 CurrentRow;
-	ETileColour CurrentColour = ETileColour::White;
 
 	void HandleCol();
 	void HandleRow();

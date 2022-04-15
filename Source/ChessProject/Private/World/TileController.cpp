@@ -25,21 +25,13 @@ void ATileController::GenerateTiles()
 		return;
 	}
 
-	ETileColour Colour = ETileColour::White;
 	for (int32 Col = 0; Col < Cols; Col++)
 	{
 		for (int32 Row = 0; Row < Rows; Row++)
 		{
-			ETeams Team = ETeams::Neutral;
-			Colour = Colour == ETileColour::White ? ETileColour::Black : ETileColour::White;
-			if (Row == 0 || Row == 1)
-			{
-				Team = ETeams::Red;
-			}
-			if (Row == 7 || Row == 8)
-			{
-				Team = ETeams::Blue;
-			}
+			const ETeams Team = Row == 0 || Row == 1 ? ETeams::Red : Row == 6 || Row == 7 ? ETeams::Blue : ETeams::Neutral;
+			const ETileColour Colour = (Row + Col + 1) % 2 == 0 ? ETileColour::White : ETileColour::Black;
+			
 			if (ATile* Tile = ATile::StartSpawnActor(this, TileClass); Tile != nullptr)
 			{
 				Tile->Team = Team;
@@ -70,7 +62,6 @@ void ATileController::GenerateTilesDefer()
 
 void ATileController::HandleCol()
 {
-	CurrentColour = CurrentColour == ETileColour::White ? ETileColour::Black : ETileColour::White;
 	CurrentRow = 0;
 	GetWorld()->GetTimerManager().SetTimer<ATileController>(
 		RowHandle,
@@ -84,21 +75,13 @@ void ATileController::HandleCol()
 
 void ATileController::HandleRow()
 {
-	CurrentColour = CurrentColour == ETileColour::White ? ETileColour::Black : ETileColour::White;
-
-	ETeams Team = ETeams::Neutral;
-	if (CurrentRow == 0 || CurrentRow == 1)
-	{
-		Team = ETeams::Red;
-	}
-	if (CurrentRow == 6 || CurrentRow == 7)
-	{
-		Team = ETeams::Blue;
-	}
+	const ETeams Team = CurrentRow == 0 || CurrentRow == 1 ? ETeams::Red : CurrentRow == 6 || CurrentRow == 7 ? ETeams::Blue : ETeams::Neutral;
+	const ETileColour Colour = (CurrentRow + CurrentCol + 1) % 2 == 0 ? ETileColour::White : ETileColour::Black;
+	
 	if (ATile* Tile = ATile::StartSpawnActor(this, TileClass); Tile != nullptr)
 	{
 		Tile->Team = Team;
-		Tile->TileColour = CurrentColour;
+		Tile->TileColour = Colour;
 		Tile->TileController = this;
 
 		FTransform Transform;
