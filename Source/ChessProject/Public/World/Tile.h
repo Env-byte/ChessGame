@@ -26,6 +26,11 @@ public:
 	// Sets default values for this actor's properties
 	ATile();
 
+	/**
+	 * This is needed to replicate the property ChessPawn
+	 */
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Team")
 	ETeams Team = ETeams::Neutral;
 
@@ -79,5 +84,4 @@ private:
 	 */
 	UFUNCTION(Server, Reliable)
 	void Server_SetChessPawn(AChessPawn* Pawn);
-	
 };

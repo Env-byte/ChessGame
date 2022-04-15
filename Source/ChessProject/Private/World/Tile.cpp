@@ -4,6 +4,7 @@
 #include "World/Tile.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ATile::ATile()
@@ -12,6 +13,12 @@ ATile::ATile()
 	PrimaryActorTick.bCanEverTick = false;
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>("StaticMesh");
 	SetRootComponent(StaticMesh);
+}
+
+void ATile::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ATile, ChessPawn);
 }
 
 ATile* ATile::StartSpawnActor(const AActor* Owner, const TSubclassOf<ATile> TileClass)
