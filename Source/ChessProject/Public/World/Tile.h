@@ -16,7 +16,7 @@ enum class ETileColour :uint8
 	White
 };
 
-UCLASS()
+UCLASS(Abstract)
 class CHESSPROJECT_API ATile : public AActor
 {
 	GENERATED_BODY()
@@ -28,12 +28,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Team")
 	ETeams Team = ETeams::Neutral;
 
-	static ATile* StartSpawnActor();
+	static ATile* StartSpawnActor(const AActor* Owner, TSubclassOf<ATile> TileClass);
 
 	void FinishSpawn(const FTransform& Transform);
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=TileWidth)
-	float Width = 0.f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Controller)
+	ATileController* TileController;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Position)
 	int32 Col;

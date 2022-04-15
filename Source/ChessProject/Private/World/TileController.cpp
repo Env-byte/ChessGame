@@ -20,21 +20,32 @@ void ATileController::BeginPlay()
 
 void ATileController::GenerateTiles()
 {
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		1.f,
-		FColor::Red,
-		FString::Printf(TEXT("Col:%d, Row:%d"), Cols, Rows)
-	);
-	for (int32 Row = 0; Row < Rows; Row++)
+	if (!TileClass)
 	{
-		for (int32 Col = 0; Col < Cols; Col++)
+		return;
+	}
+	
+	ETileColour Colour = ETileColour::White;
+	for (int32 Col = 0; Col < Cols; Col++)
+	{
+		if (Colour == ETileColour::White)
 		{
-			ETileColour Colour = ETileColour::White;
+			Colour = ETileColour::Black;
+		}
+		else
+		{
+			Colour = ETileColour::White;
+		}
+		for (int32 Row = 0; Row < Rows; Row++)
+		{
 			ETeams Team = ETeams::Neutral;
-			if (Row % 2 == 0)
+			if (Colour == ETileColour::White)
 			{
 				Colour = ETileColour::Black;
+			}
+			else
+			{
+				Colour = ETileColour::White;
 			}
 			if (Row == 0 || Row == 1)
 			{
@@ -44,13 +55,15 @@ void ATileController::GenerateTiles()
 			{
 				Team = ETeams::Blue;
 			}
-			if (ATile* Tile = ATile::StartSpawnActor(); IsValid(Tile))
+			if (ATile* Tile = ATile::StartSpawnActor(this, TileClass); Tile != nullptr)
 			{
 				Tile->Team = Team;
 				Tile->TileColour = Colour;
+				Tile->TileController = this;
+
 				FTransform Transform;
 				Transform.SetRotation(FQuat(0.f, 0.f, 0.f, 0.f));
-				Transform.SetLocation(FVector(Tile->Width * Col, Tile->Width * Row, 0.f));
+				Transform.SetLocation(FVector(Width * Col, Width * Row, 0.f));
 				Tile->FinishSpawn(Transform);
 			}
 		}

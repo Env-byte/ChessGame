@@ -10,24 +10,23 @@ ATile::ATile()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-	Width = 150.f;
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>("StaticMesh");
 	SetRootComponent(StaticMesh);
 }
 
-ATile* ATile::StartSpawnActor()
+ATile* ATile::StartSpawnActor(const AActor* Owner, const TSubclassOf<ATile> TileClass)
 {
-	const UWorld* World = GEngine->GetWorld();
+	const UWorld* World = Owner->GetWorld();
 	const FTransform Transform = {};
 
 	AActor* Actor = UGameplayStatics::BeginDeferredActorSpawnFromClass(
 		World,
-		StaticClass()->GetClass(),
+		TileClass,
 		Transform,
 		ESpawnActorCollisionHandlingMethod::AlwaysSpawn
 	);
 
-	if (IsValid(Actor))
+	if (Actor == nullptr)
 	{
 		return nullptr;
 	}

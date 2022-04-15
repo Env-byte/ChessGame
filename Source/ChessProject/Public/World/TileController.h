@@ -32,4 +32,10 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Board)
 	int32 Rows;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=TileWidth)
+	float Width = 0.f;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Board)
+	TSubclassOf<ATile> TileClass;
 };
