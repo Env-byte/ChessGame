@@ -45,7 +45,7 @@ protected:
 	void GenerateTile();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=SpawnTime)
-	float Timer = 0.15f;
+	float TimerScale = 0.005f;
 	
 	FTimerHandle Handle;
 	

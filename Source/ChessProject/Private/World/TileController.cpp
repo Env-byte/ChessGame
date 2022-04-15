@@ -40,7 +40,7 @@ void ATileController::GenerateTiles()
 				Handle,
 				this,
 				&ATileController::GenerateTile,
-				Timer * Rows + 0.1f,
+				(Row + 1) * (Col + 1) * TimerScale,
 				true,
 				0.f
 			);
