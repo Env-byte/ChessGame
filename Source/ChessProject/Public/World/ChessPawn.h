@@ -6,17 +6,19 @@
 #include "GameFramework/Actor.h"
 #include "ChessPawn.generated.h"
 
-UCLASS()
+UCLASS(Abstract)
 class CHESSPROJECT_API AChessPawn : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AChessPawn();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Component)
+	UStaticMeshComponent* ChessPieceMesh;
 };

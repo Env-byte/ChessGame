@@ -54,7 +54,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Component)
-	UStaticMeshComponent* StaticMesh;
+	UStaticMeshComponent* TileMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=ChessPiece, ReplicatedUsing=OnRep_ChessPawn)
 	AChessPawn* ChessPawn = nullptr;
