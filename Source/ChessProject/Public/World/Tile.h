@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ChessPawn.h"
 #include "ChessProject/ChessProject.h"
 #include "GameFramework/Actor.h"
 #include "Tile.generated.h"
 
+class AChessPiece;
 class ATileController;
 
 UENUM(BlueprintType)
@@ -56,8 +56,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Component)
 	UStaticMeshComponent* TileMesh;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=ChessPiece, ReplicatedUsing=OnRep_ChessPawn)
-	AChessPawn* ChessPawn = nullptr;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=ChessPiece, ReplicatedUsing=OnRep_ChessPiece)
+	AChessPiece* ChessPiece = nullptr;
 
 	/**
 	 * Called when the ChessPawn for the server instance of this tile changes and is replicated down.
@@ -65,7 +65,7 @@ protected:
 	 * Never runs on server
 	 */
 	UFUNCTION()
-	void OnRep_ChessPawn();
+	void OnRep_ChessPiece();
 public:
 	/**
 	 * Used to set the ChessPawn for this tile
@@ -74,7 +74,7 @@ public:
 	 * is called which routes this function to be called on the Server
 	 */
 	UFUNCTION(BlueprintCallable)
-	void SetChessPawn(AChessPawn* Pawn);
+	void SetChessPiece(AChessPiece* Pawn);
 
 private:
 	/**
@@ -83,5 +83,5 @@ private:
 	 * Private as this should never be called outside of class
 	 */
 	UFUNCTION(Server, Reliable)
-	void Server_SetChessPawn(AChessPawn* Pawn);
+	void Server_SetChessPiece(AChessPiece* Pawn);
 };

@@ -5,6 +5,7 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "World/ChessPiece.h"
 
 // Sets default values
 ATile::ATile()
@@ -19,7 +20,7 @@ ATile::ATile()
 void ATile::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ATile, ChessPawn);
+	DOREPLIFETIME(ATile, ChessPiece);
 }
 
 ATile* ATile::StartSpawnActor(const AActor* Owner, const TSubclassOf<ATile> TileClass)
@@ -54,17 +55,17 @@ void ATile::BeginPlay()
 	Super::BeginPlay();
 }
 
-void ATile::OnRep_ChessPawn()
+void ATile::OnRep_ChessPiece()
 {
 	//can be used to correct incorrect changes to the game. such as the piece moving on client when its not valid on server
 }
 
-void ATile::SetChessPawn(AChessPawn* Pawn)
+void ATile::SetChessPiece(AChessPiece* Pawn)
 {
 	if (!Pawn->HasAuthority())
 	{
 		//this is client
-		Server_SetChessPawn(Pawn);
+		Server_SetChessPiece(Pawn);
 		// we do not return as we want changes to happen simultaneously between client / server
 		// otherwise it would give the impression of lag
 	}
@@ -73,10 +74,10 @@ void ATile::SetChessPawn(AChessPawn* Pawn)
 		//this is server
 		//we can validated the move here and correct inconsistency using OnRep_ChessPawn
 	}
-	ChessPawn = Pawn;
+	ChessPiece = Pawn;
 }
 
-void ATile::Server_SetChessPawn_Implementation(AChessPawn* Pawn)
+void ATile::Server_SetChessPiece_Implementation(AChessPiece* Pawn)
 {
-	SetChessPawn(Pawn);
+	SetChessPiece(Pawn);
 }

@@ -43,6 +43,7 @@ protected:
 	/////////////// Defer Spawn ///////////////
 	UFUNCTION(BlueprintCallable)
 	void GenerateTiles();
+	AChessPiece* GetChessPiece();
 
 	void GenerateTile();
 
