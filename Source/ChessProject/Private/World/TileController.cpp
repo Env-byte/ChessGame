@@ -186,6 +186,13 @@ void ATileController::Multicast_ShowTiles_Implementation()
 	for (int32 i = 0, Length = Tiles.Num(); i < Length; i++)
 	{
 		FTimerManager& TimerManager = GetWorld()->GetTimerManager();
+		/**
+		 * Call local method with params using a timer
+		 * Need to be really careful with lambdas as the i variable is out of scope
+		 * before the lambda is executed resulting in unknown potential values of i
+		 * using = in the capture means its copying the value
+		 * using & means its using a pointer to the value (this is not recommeneded for the reason stated above about scope)
+		 */
 		TimerManager.SetTimer(
 			Handle,
 			[=] { ShowTile(Tiles[i]); },
