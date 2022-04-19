@@ -14,7 +14,8 @@ AChessPiece::AChessPiece()
 	PivotOffsetComponent = CreateDefaultSubobject<USceneComponent>("PivotOffset");
 	SetRootComponent(PivotOffsetComponent);
 	ChessPieceMesh->SetupAttachment(PivotOffsetComponent);
-	SetReplicates(true);
+    bReplicates = true;
+	SetHidden(true);
 }
 
 void AChessPiece::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

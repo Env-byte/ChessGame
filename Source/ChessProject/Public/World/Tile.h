@@ -17,6 +17,23 @@ enum class ETileColour :uint8
 	White
 };
 
+USTRUCT(BlueprintType)
+struct FTileInfo
+{
+	GENERATED_BODY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Position)
+	int32 Col;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Position)
+	int32 Row;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Position)
+	ETileColour TileColour;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Team")
+	ETeams Team = ETeams::Neutral;
+};
+
 UCLASS(Abstract)
 class CHESSPROJECT_API ATile : public AActor
 {
@@ -30,9 +47,6 @@ public:
 	 * This is needed to replicate the property ChessPawn
 	 */
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Team")
-	ETeams Team = ETeams::Neutral;
 
 	static ATile* StartSpawnActor(const AActor* Owner, TSubclassOf<ATile> TileClass);
 
@@ -41,14 +55,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Controller)
 	ATileController* TileController;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Position)
-	int32 Col;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Position)
-	int32 Row;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Position)
-	ETileColour TileColour;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FTileInfo TileInfo;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -76,6 +84,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetChessPiece(AChessPiece* Pawn);
 
+	FORCEINLINE AChessPiece* GetChessPiece() const { return ChessPiece; }
 private:
 	/**
 	 * Makes a call to the server to execute SetChessPawn

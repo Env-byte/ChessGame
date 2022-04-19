@@ -14,7 +14,8 @@ ATile::ATile()
 	PrimaryActorTick.bCanEverTick = false;
 	TileMesh = CreateDefaultSubobject<UStaticMeshComponent>("TileMesh");
 	SetRootComponent(TileMesh);
-	SetReplicates(true);
+    bReplicates = true;
+	SetHidden(true);
 }
 
 void ATile::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
