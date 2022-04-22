@@ -32,7 +32,7 @@ void ATileController::BeginPlay()
 
 AChessPiece* ATileController::GetChessPiece(const APCGame* PlayerController, const int32 Col, const int32 Row)
 {
-	if (UGIChess* GameInstance = GWorld->GetGameInstance<UGIChess>(); GameInstance && HasAuthority())
+	if (UGIChess* GameInstance = GWorld->GetGameInstance<UGIChess>(); GameInstance)
 	{
 		//this will only happen on server
 		//this will replicate down to clients
@@ -76,6 +76,7 @@ AChessPiece* ATileController::GetChessPiece(const APCGame* PlayerController, con
 
 void ATileController::GenerateTiles()
 {
+	if (!HasAuthority()) { return; }
 	if (!TileControllerSettings.TileClass)
 	{
 		return;
@@ -86,9 +87,10 @@ void ATileController::GenerateTiles()
 	}
 	ControllerState = Started;
 
-	for (int32 Col = 0; Col < TileControllerSettings.Cols; Col++)
+
+	for (int32 Row = 0; Row < TileControllerSettings.Rows; Row++)
 	{
-		for (int32 Row = 0; Row < TileControllerSettings.Rows; Row++)
+		for (int32 Col = 0; Col < TileControllerSettings.Cols; Col++)
 		{
 			GenerateTile(Col, Row);
 		}
@@ -98,29 +100,21 @@ void ATileController::GenerateTiles()
 
 void ATileController::GenerateTile(const int32 Col, const int32 Row)
 {
-	// todo probably need to replace the owners of the piece and tile to
-	// be the player controller for networking to work correctly
-
-	if (!HasAuthority())
-	{
-		return;
-	}
-
 	AGMGame* GameMode = GetWorld()->GetAuthGameMode<AGMGame>();
 	if (!IsValid(GameMode))
 	{
 		return;
 	}
 
-	const ETeams Team = Col == 0 || Row == 1
+	const ETeams Team = Row == 0 || Row == 1
 		                    ? ETeams::Red
 		                    : Row == 6 || Row == 7
 		                    ? ETeams::Blue
-		                    : ETeams::Neutral;
+		                    : ETeams::None;
 	const ETileColour Colour = (Row + Col + 1) % 2 == 0 ? ETileColour::White : ETileColour::Black;
 
 	AChessPiece* ChessPiece = nullptr;
-	if (Team != ETeams::Neutral)
+	if (Team != ETeams::None)
 	{
 		//get chess piece and set the player controller as the owner of it for networking purposes
 		ChessPiece = GetChessPiece(
@@ -152,24 +146,10 @@ void ATileController::GenerateTile(const int32 Col, const int32 Row)
 				                      ? FQuat(0.f, 0.f, 180.f, 0.f)
 				                      : FQuat(0.f, 0.f, 0.f, 0.f));
 			Transform.SetLocation(FVector(TileControllerSettings.Width * Col,
-			                              TileControllerSettings.Width * Col, 50.f));
+			                              TileControllerSettings.Width * Row, 50.f));
 			ChessPiece->FinishSpawn(Transform);
 		}
 	}
-
-	/*CurrentRow += 1;
-
-	if (CurrentRow == TileControllerSettings.Rows)
-	{
-		CurrentCol += 1;
-		CurrentRow = 0;
-
-		if (CurrentCol == TileControllerSettings.Cols)
-		{
-			GetWorld()->GetTimerManager().ClearTimer(Handle);
-			bIsLoaded = true;
-		}
-	}*/
 }
 
 void ATileController::ShowTile(ATile* Tile)
@@ -183,8 +163,11 @@ void ATileController::ShowTile(ATile* Tile)
 
 void ATileController::Multicast_ShowTiles_Implementation()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, FString::Printf(TEXT("MultiCast %d"), GPlayInEditorID));
+
 	for (int32 i = 0, Length = Tiles.Num(); i < Length; i++)
 	{
+		if (!IsValid(Tiles[i])) { return; }
 		FTimerManager& TimerManager = GetWorld()->GetTimerManager();
 		/**
 		 * Call local method with params using a timer

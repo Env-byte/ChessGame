@@ -32,7 +32,7 @@ public:
 	 * The team this object belongs to
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Piece Info", ReplicatedUsing=OnRep_Team)
-	ETeams Team = ETeams::Neutral;
+	ETeams Team = ETeams::None;
 
 	/**
 	* The team this object belongs to

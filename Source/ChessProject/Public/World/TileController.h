@@ -64,7 +64,15 @@ protected:
 	 * This only happens on Server
 	 * Tiles are set to hidden initially 
 	 */
+public:
 	void GenerateTiles();
+	/** 
+	 * Called From Server to show tiles on all connected clients
+	*/
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_ShowTiles();
+
+protected:
 	AChessPiece* GetChessPiece(const APCGame* PlayerController, int32 Col, int32 Row);
 
 	/**
@@ -77,11 +85,6 @@ protected:
 
 	FTimerHandle Handle;
 
-	/** 
-	 * Called From Server to show tiles on all connected clients
-	 */
-	UFUNCTION(NetMulticast, Reliable)
-	void Multicast_ShowTiles();
 
 	void ShowTile(ATile* Tile);
 	/////////////// Defer Spawn ///////////////

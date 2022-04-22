@@ -55,6 +55,7 @@ void AChessPiece::FinishSpawn(const FTransform& Transform)
 void AChessPiece::BeginPlay()
 {
 	Super::BeginPlay();
+	SetHidden(false);
 }
 
 void AChessPiece::OnRep_Team()

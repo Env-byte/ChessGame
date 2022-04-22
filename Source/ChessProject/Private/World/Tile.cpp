@@ -14,7 +14,7 @@ ATile::ATile()
 	PrimaryActorTick.bCanEverTick = false;
 	TileMesh = CreateDefaultSubobject<UStaticMeshComponent>("TileMesh");
 	SetRootComponent(TileMesh);
-    bReplicates = true;
+	bReplicates = true;
 	SetHidden(true);
 }
 
@@ -22,6 +22,8 @@ void ATile::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePro
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ATile, ChessPiece);
+	DOREPLIFETIME(ATile, TileInfo);
+	DOREPLIFETIME(ATile, TileController);
 }
 
 ATile* ATile::StartSpawnActor(const AActor* Owner, const TSubclassOf<ATile> TileClass)
@@ -54,6 +56,7 @@ void ATile::FinishSpawn(const FTransform& Transform)
 void ATile::BeginPlay()
 {
 	Super::BeginPlay();
+	SetHidden(false);
 }
 
 void ATile::OnRep_ChessPiece()

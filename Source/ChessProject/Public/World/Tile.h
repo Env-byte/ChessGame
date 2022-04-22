@@ -31,7 +31,7 @@ struct FTileInfo
 	ETileColour TileColour;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Team")
-	ETeams Team = ETeams::Neutral;
+	ETeams Team = ETeams::None;
 };
 
 UCLASS(Abstract)
@@ -52,10 +52,10 @@ public:
 
 	void FinishSpawn(const FTransform& Transform);
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Controller)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Controller, Replicated)
 	ATileController* TileController;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
 	FTileInfo TileInfo;
 protected:
 	// Called when the game starts or when spawned

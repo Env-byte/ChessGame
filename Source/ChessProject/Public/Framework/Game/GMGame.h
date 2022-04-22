@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "ChessProject/ChessProject.h"
+#include "GameFramework/GameMode.h"
 #include "GMGame.generated.h"
 
 enum class ETeams : uint8;
@@ -45,7 +46,7 @@ struct FPlayerInfo
  * 
  */
 UCLASS()
-class CHESSPROJECT_API AGMGame : public AGameModeBase
+class CHESSPROJECT_API AGMGame : public AGameMode
 {
 	GENERATED_BODY()
 
@@ -59,6 +60,7 @@ public:
 
 protected:
 	////////// Players Joining //////////
+	int32 ReadyPlayers = 0;
 	/** if joining straight into the server */
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
@@ -72,5 +74,17 @@ protected:
 
 	/** Handle player leaving by removing from array of all players */
 	virtual void Logout(AController* Exiting) override;
+
+	/**
+	 * When player joins spawn a camera and posses it 
+	 */
+	UFUNCTION(BlueprintImplementableEvent)
+	void SpawnPlayerCamera(const FPlayerInfo& PlayerInfo);
+public:
+	/** When clientside is finished setting up, this function is called from the playerController */
+	void PlayerControllerReady();
 	////////// Players Joining //////////
+protected:
+	////////// Game Rules //////////
+	////////// Game Rules //////////
 };

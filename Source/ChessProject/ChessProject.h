@@ -8,5 +8,5 @@ enum class ETeams : uint8
 {
 	Red,
 	Blue,
-	Neutral 
+	None 
 };
