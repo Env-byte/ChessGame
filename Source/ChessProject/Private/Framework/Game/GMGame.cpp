@@ -31,7 +31,7 @@ void AGMGame::BeginPlay()
 {
 	Super::BeginPlay();
 #if WITH_EDITOR
-	SetFolderPath(FName(FString::Printf(TEXT("/Framework"))));
+	SetFolderPath(FName(FString::Printf(TEXT("/SpawnedActors/Framework"))));
 #endif
 }
 
@@ -56,19 +56,20 @@ void AGMGame::InitSeamlessTravelPlayer(AController* NewController)
 void AGMGame::HandlePlayerJoin(APCGame* PlayerController)
 {
 	APSGame* PS = PlayerController->GetPlayerState<APSGame>();
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, FString::Printf(TEXT("HandlePlayerJoin ")));
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, FString::Printf(TEXT("HandlePlayerJoin")));
 
+	FPlayerInfo PlayerInfo;
 	if (ConnectedPlayers.Num() == 0)
 	{
-		PS->PlayerInfo = FPlayerInfo(PlayerController, ETeams::Blue, FMath::RandBool());
+		PlayerInfo = FPlayerInfo(PlayerController, ETeams::Blue, FMath::RandBool());
 	}
 	else
 	{
-		PS->PlayerInfo = FPlayerInfo(PlayerController, ETeams::Red, !ConnectedPlayers[0].bIsFirst);
+		PlayerInfo = FPlayerInfo(PlayerController, ETeams::Red, !ConnectedPlayers[0].bIsFirst);
 	}
 
-	ConnectedPlayers.Push(PS->PlayerInfo);
-
+	ConnectedPlayers.Add(PlayerInfo);
+	PS->PlayerInfo = PlayerInfo;
 	//start match if it has not already started
 	if (!HasMatchStarted())
 	{
@@ -83,32 +84,47 @@ void AGMGame::Logout(AController* Exiting)
 
 void AGMGame::PlayerControllerReady()
 {
+	ReadyPlayers++;
+	int32 NumPIEClients = 0;
+	//make sure game can start with only one client on play instance editor
+#if WITH_EDITOR
+	if (GEditor->IsPlaySessionRequestQueued())
+	{
+		GEditor->GetPlaySessionRequest()->EditorPlaySettings->GetPlayNumberOfClients(NumPIEClients);
+	}
+	else if (GEditor->IsPlaySessionInProgress())
+	{
+		NumPIEClients = GEditor->GetPlayInEditorSessionInfo()->PIEInstanceCount;
+	}
+#endif
+
 	GEngine->AddOnScreenDebugMessage(
 		-1,
 		10.f,
-		FColor::Black,
-		FString::Printf(TEXT("PlayerControllerReady %d. IsPlayingSessionInEditor %s. NumClientInstances %d "),
-		                ReadyPlayers,
-		                GEditor->IsPlayingSessionInEditor() ? TEXT("TRUE") : TEXT("FALSE"),
-		                GEditor->GetPlayInEditorSessionInfo()->PIEInstanceCount
-		));
-	ReadyPlayers++;
+		FColor::Yellow,
+		FString::Printf(TEXT("PIEInstanceCount : %d"),
+		                NumPIEClients
+		)
+	);
 
-	if (ReadyPlayers == 2 || (GEditor->IsPlayingSessionInEditor() && GEditor->GetPlayInEditorSessionInfo()->
-	                                                                          PIEInstanceCount == ReadyPlayers))
+	if (ReadyPlayers == 2 || NumPIEClients == ReadyPlayers)
 	{
 		//start game loop here
+
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow,
+		                                 FString::Printf(TEXT("ConnectedPlayers : %d"), ConnectedPlayers.Num()));
+
+
 		TArray<AActor*> OutTileController;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATileController::StaticClass(), OutTileController);
-
-		TArray<AActor*> OutSpawnController;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATileController::StaticClass(), OutSpawnController);
 
 		if (OutTileController.Num() > 0)
 		{
 			if (ATileController* TileController = Cast<ATileController>(OutTileController[0]))
 			{
 				TileController->GenerateTiles();
+				TArray<AActor*> OutSpawnController;
+				UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawnController::StaticClass(), OutSpawnController);
 				if (OutSpawnController.Num() > 0)
 				{
 					if (ASpawnController* SpawnController = Cast<ASpawnController>(OutSpawnController[0]))
@@ -121,7 +137,7 @@ void AGMGame::PlayerControllerReady()
 
 		for (const FPlayerInfo ConnectedPlayer : ConnectedPlayers)
 		{
-			SpawnPlayerCamera(ConnectedPlayer);
+			BP_SpawnPlayerCamera(ConnectedPlayer);
 			if (ConnectedPlayer.bIsFirst)
 			{
 				GetGameState<AGSGame>()->SetPlayerTurn(ConnectedPlayer);

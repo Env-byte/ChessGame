@@ -19,15 +19,18 @@ void APCGame::BeginPlay()
 	DisableInput(this);
 
 #if WITH_EDITOR
-	SetFolderPath(FName(FString::Printf(TEXT("/Framework"))));
+	SetFolderPath(FName(FString::Printf(TEXT("/SpawnedActors/Framework"))));
 #endif
 }
 
 void APCGame::OnTurnChange(const bool bThisPlayersTurn)
 {
+
+	
 	if (bThisPlayersTurn)
 	{
 		EnableInput(this);
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, FString::Printf(TEXT("Its Your Turn")));
 	}
 	else
 	{

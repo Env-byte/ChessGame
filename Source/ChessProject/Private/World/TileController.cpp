@@ -108,7 +108,7 @@ void ATileController::GenerateTile(const int32 Col, const int32 Row)
 
 	const ETeams Team = Row == 0 || Row == 1
 		                    ? ETeams::Red
-		                    : Row == 6 || Row == 7
+		                    : Row == TileControllerSettings.Rows - 2 || Row == TileControllerSettings.Rows - 1
 		                    ? ETeams::Blue
 		                    : ETeams::None;
 	const ETileColour Colour = (Row + Col + 1) % 2 == 0 ? ETileColour::White : ETileColour::Black;

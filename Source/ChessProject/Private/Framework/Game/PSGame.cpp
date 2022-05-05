@@ -15,6 +15,6 @@ void APSGame::BeginPlay()
 {
 	Super::BeginPlay();
 #if WITH_EDITOR
-	SetFolderPath(FName(FString::Printf(TEXT("/Framework"))));
+	SetFolderPath(FName(FString::Printf(TEXT("/SpawnedActors/Framework"))));
 #endif
 }

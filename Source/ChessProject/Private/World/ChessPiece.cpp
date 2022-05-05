@@ -62,7 +62,7 @@ void AChessPiece::BeginPlay()
 	static const UEnum* EPieceTypesEnumType = FindObject<UEnum>(ANY_PACKAGE, TEXT("EPieceTypes"));
 	SetFolderPath(FName(FString::Printf(
 		TEXT("/SpawnedActors/ChessPawn/%s"),
-		*EPieceTypesEnumType->GetNameStringByIndex(static_cast<uint32>(this->PieceType)))));
+		*EPieceTypesEnumType->GetNameStringByIndex(static_cast<int32>(this->PieceType)))));
 #endif
 }
 

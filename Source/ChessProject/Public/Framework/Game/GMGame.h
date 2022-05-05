@@ -82,7 +82,7 @@ protected:
 	 * When player joins spawn a camera and posses it 
 	 */
 	UFUNCTION(BlueprintImplementableEvent)
-	void SpawnPlayerCamera(const FPlayerInfo& PlayerInfo);
+	void BP_SpawnPlayerCamera(const FPlayerInfo& PlayerInfo);
 public:
 	/** When clientside is finished setting up, this function is called from the playerController */
 	void PlayerControllerReady();

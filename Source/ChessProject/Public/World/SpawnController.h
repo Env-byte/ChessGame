@@ -27,5 +27,5 @@ public:
 	/**
 	 * Generate Spawns using the size of the board to help guide where to place them
 	 */
-	TMap<ETeams, APlayerSpawn*> GenerateSpawns(ATileController* TileController);
+	TMap<ETeams, APlayerSpawn*> GenerateSpawns(ATileController* TileController) const;
 };
