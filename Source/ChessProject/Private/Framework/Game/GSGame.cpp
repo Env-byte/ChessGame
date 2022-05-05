@@ -28,11 +28,19 @@ void AGSGame::SetPlayerTurn(const FPlayerInfo& PlayerInfo)
 	}
 }
 
+void AGSGame::BeginPlay()
+{
+	Super::BeginPlay();
+#if WITH_EDITOR
+	SetFolderPath(FName(FString::Printf(TEXT("/Framework"))));
+#endif
+}
+
 void AGSGame::OnRep_PlayerTurn()
 {
 	// its usually really bad to not check pointers are valid, but if this ever happens then there is a major issue
 	APCGame* PC = Cast<APCGame>(GEngine->GetFirstLocalPlayerController(GetWorld()));
-
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, FString::Printf(TEXT("Its Your Turn")));
 	if (const APSGame* PS = PC->GetPlayerState<APSGame>())
 	{
 		PC->OnTurnChange(PS->PlayerInfo.Team == PlayerTurn);

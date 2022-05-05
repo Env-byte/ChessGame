@@ -7,7 +7,7 @@
 #include "GameFramework/GameMode.h"
 #include "GMGame.generated.h"
 
-enum class ETeams : uint8;
+class APlayerSpawn;
 class APCGame;
 
 USTRUCT(BlueprintType)
@@ -54,10 +54,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<FPlayerInfo> ConnectedPlayers;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TMap<ETeams, APlayerSpawn*> PlayerSpawns;
 public:
 	UFUNCTION(BlueprintCallable)
 	FPlayerInfo GetConnectedPlayer(ETeams Team);
 
+	virtual void BeginPlay() override;
 protected:
 	////////// Players Joining //////////
 	int32 ReadyPlayers = 0;

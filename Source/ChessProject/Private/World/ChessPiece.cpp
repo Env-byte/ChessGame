@@ -14,7 +14,7 @@ AChessPiece::AChessPiece()
 	PivotOffsetComponent = CreateDefaultSubobject<USceneComponent>("PivotOffset");
 	SetRootComponent(PivotOffsetComponent);
 	ChessPieceMesh->SetupAttachment(PivotOffsetComponent);
-    bReplicates = true;
+	bReplicates = true;
 	SetHidden(true);
 }
 
@@ -43,12 +43,14 @@ AChessPiece* AChessPiece::StartSpawnActor(const AActor* Owner, const TSubclassOf
 	}
 
 	AChessPiece* ChessPawn = Cast<AChessPiece>(Actor);
+
 	return ChessPawn;
 }
 
 void AChessPiece::FinishSpawn(const FTransform& Transform)
 {
 	UGameplayStatics::FinishSpawningActor(this, Transform);
+
 }
 
 // Called when the game starts or when spawned
@@ -56,6 +58,12 @@ void AChessPiece::BeginPlay()
 {
 	Super::BeginPlay();
 	SetHidden(false);
+#if WITH_EDITOR
+	static const UEnum* EPieceTypesEnumType = FindObject<UEnum>(ANY_PACKAGE, TEXT("EPieceTypes"));
+	SetFolderPath(FName(FString::Printf(
+		TEXT("/SpawnedActors/ChessPawn/%s"),
+		*EPieceTypesEnumType->GetNameStringByIndex(static_cast<uint32>(this->PieceType)))));
+#endif
 }
 
 void AChessPiece::OnRep_Team()

@@ -19,4 +19,6 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Replicated)
 	FPlayerInfo PlayerInfo;
+
+	virtual void BeginPlay() override;
 };

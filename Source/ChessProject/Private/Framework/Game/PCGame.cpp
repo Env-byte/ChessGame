@@ -17,6 +17,10 @@ void APCGame::BeginPlay()
 		Server_ReadyToStart();
 	}
 	DisableInput(this);
+
+#if WITH_EDITOR
+	SetFolderPath(FName(FString::Printf(TEXT("/Framework"))));
+#endif
 }
 
 void APCGame::OnTurnChange(const bool bThisPlayersTurn)

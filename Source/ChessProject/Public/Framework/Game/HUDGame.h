@@ -13,5 +13,5 @@ UCLASS()
 class CHESSPROJECT_API AHUDGame : public AHUD
 {
 	GENERATED_BODY()
-	
+	virtual void BeginPlay() override;
 };

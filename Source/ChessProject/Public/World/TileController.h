@@ -55,9 +55,6 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category="Tiles", Replicated)
 	TArray<ATile*> Tiles;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=ControllerSettings)
-	FTileControllerSettings TileControllerSettings;
-
 	/////////////// Defer Spawn ///////////////
 	/**
 	 * Generate Tiles
@@ -65,12 +62,17 @@ protected:
 	 * Tiles are set to hidden initially 
 	 */
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=ControllerSettings)
+	FTileControllerSettings TileControllerSettings;
+
 	void GenerateTiles();
 	/** 
 	 * Called From Server to show tiles on all connected clients
 	*/
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_ShowTiles();
+
+	FORCEINLINE TArray<ATile*>& GetTiles() { return Tiles; }
 
 protected:
 	AChessPiece* GetChessPiece(const APCGame* PlayerController, int32 Col, int32 Row);
@@ -85,7 +87,9 @@ protected:
 
 	FTimerHandle Handle;
 
-
 	void ShowTile(ATile* Tile);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BP_OnTilesSpawned();
 	/////////////// Defer Spawn ///////////////
 };

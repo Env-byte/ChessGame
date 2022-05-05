@@ -50,6 +50,7 @@ ATile* ATile::StartSpawnActor(const AActor* Owner, const TSubclassOf<ATile> Tile
 void ATile::FinishSpawn(const FTransform& Transform)
 {
 	UGameplayStatics::FinishSpawningActor(this, Transform);
+
 }
 
 // Called when the game starts or when spawned
@@ -57,6 +58,9 @@ void ATile::BeginPlay()
 {
 	Super::BeginPlay();
 	SetHidden(false);
+#if WITH_EDITOR
+	SetFolderPath(FName(FString::Printf(TEXT("/SpawnedActors/Tile"))));
+#endif
 }
 
 void ATile::OnRep_ChessPiece()

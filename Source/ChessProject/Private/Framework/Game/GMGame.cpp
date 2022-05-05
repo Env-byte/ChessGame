@@ -9,6 +9,7 @@
 #include "Framework/Game/PCGame.h"
 #include "Framework/Game/PSGame.h"
 #include "Kismet/GameplayStatics.h"
+#include "World/SpawnController.h"
 #include "World/TileController.h"
 
 
@@ -24,6 +25,14 @@ FPlayerInfo AGMGame::GetConnectedPlayer(const ETeams Team)
 		return ConnectedPlayers[1];
 	}
 	return ConnectedPlayers[0];
+}
+
+void AGMGame::BeginPlay()
+{
+	Super::BeginPlay();
+#if WITH_EDITOR
+	SetFolderPath(FName(FString::Printf(TEXT("/Framework"))));
+#endif
 }
 
 void AGMGame::PostLogin(APlayerController* NewPlayer)
@@ -58,7 +67,6 @@ void AGMGame::HandlePlayerJoin(APCGame* PlayerController)
 		PS->PlayerInfo = FPlayerInfo(PlayerController, ETeams::Red, !ConnectedPlayers[0].bIsFirst);
 	}
 
-	SpawnPlayerCamera(PS->PlayerInfo);
 	ConnectedPlayers.Push(PS->PlayerInfo);
 
 	//start match if it has not already started
@@ -90,18 +98,30 @@ void AGMGame::PlayerControllerReady()
 	                                                                          PIEInstanceCount == ReadyPlayers))
 	{
 		//start game loop here
-		TArray<AActor*> OutActors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATileController::StaticClass(), OutActors);
+		TArray<AActor*> OutTileController;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATileController::StaticClass(), OutTileController);
 
-		if (OutActors.Num() > 0)
+		TArray<AActor*> OutSpawnController;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATileController::StaticClass(), OutSpawnController);
+
+		if (OutTileController.Num() > 0)
 		{
-			if (ATileController* TileController = Cast<ATileController>(OutActors[0]))
+			if (ATileController* TileController = Cast<ATileController>(OutTileController[0]))
 			{
 				TileController->GenerateTiles();
+				if (OutSpawnController.Num() > 0)
+				{
+					if (ASpawnController* SpawnController = Cast<ASpawnController>(OutSpawnController[0]))
+					{
+						PlayerSpawns = SpawnController->GenerateSpawns(TileController);
+					}
+				}
 			}
 		}
+
 		for (const FPlayerInfo ConnectedPlayer : ConnectedPlayers)
 		{
+			SpawnPlayerCamera(ConnectedPlayer);
 			if (ConnectedPlayer.bIsFirst)
 			{
 				GetGameState<AGSGame>()->SetPlayerTurn(ConnectedPlayer);

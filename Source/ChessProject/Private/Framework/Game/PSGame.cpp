@@ -10,3 +10,11 @@ void APSGame::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeP
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(APSGame, PlayerInfo);
 }
+
+void APSGame::BeginPlay()
+{
+	Super::BeginPlay();
+#if WITH_EDITOR
+	SetFolderPath(FName(FString::Printf(TEXT("/Framework"))));
+#endif
+}

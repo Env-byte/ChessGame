@@ -19,6 +19,8 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	void SetPlayerTurn(const FPlayerInfo& PlayerInfo);
+
+	virtual void BeginPlay() override;
 protected:
 	UPROPERTY(ReplicatedUsing=OnRep_PlayerTurn)
 	ETeams PlayerTurn = ETeams::None;
