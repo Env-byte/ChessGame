@@ -21,11 +21,9 @@ void AGSGame::SetPlayerTurn(const FPlayerInfo& PlayerInfo)
 	PlayerTurn = PlayerInfo.Team;
 
 	// check if the current players turn is the local player as this game is peer to peer not dedicated server
-	if (PlayerInfo.PlayerController->IsLocalController())
-	{
-		//if it is the local controller we manually call on the OnRep_PlayerTurn
-		OnRep_PlayerTurn();
-	}
+
+	//if it is the local controller we manually call on the OnRep_PlayerTurn
+	OnRep_PlayerTurn();
 }
 
 void AGSGame::BeginPlay()

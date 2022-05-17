@@ -25,17 +25,15 @@ void APCGame::BeginPlay()
 
 void APCGame::OnTurnChange(const bool bThisPlayersTurn)
 {
-
-	
 	if (bThisPlayersTurn)
 	{
 		EnableInput(this);
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, FString::Printf(TEXT("Its Your Turn")));
 	}
 	else
 	{
 		DisableInput(this);
 	}
+	OnTurnChangeEvent.Broadcast(bThisPlayersTurn);
 }
 
 void APCGame::Server_ReadyToStart_Implementation()

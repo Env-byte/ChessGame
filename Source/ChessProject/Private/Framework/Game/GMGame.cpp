@@ -56,7 +56,6 @@ void AGMGame::InitSeamlessTravelPlayer(AController* NewController)
 void AGMGame::HandlePlayerJoin(APCGame* PlayerController)
 {
 	APSGame* PS = PlayerController->GetPlayerState<APSGame>();
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, FString::Printf(TEXT("HandlePlayerJoin")));
 
 	FPlayerInfo PlayerInfo;
 	if (ConnectedPlayers.Num() == 0)
@@ -98,21 +97,21 @@ void AGMGame::PlayerControllerReady()
 	}
 #endif
 
-	GEngine->AddOnScreenDebugMessage(
+	/*GEngine->AddOnScreenDebugMessage(
 		-1,
 		10.f,
 		FColor::Yellow,
 		FString::Printf(TEXT("PIEInstanceCount : %d"),
 		                NumPIEClients
 		)
-	);
+	);*/
 
 	if (ReadyPlayers == 2 || NumPIEClients == ReadyPlayers)
 	{
 		//start game loop here
 
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow,
-		                                 FString::Printf(TEXT("ConnectedPlayers : %d"), ConnectedPlayers.Num()));
+		/*GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow,
+		                                 FString::Printf(TEXT("ConnectedPlayers : %d"), ConnectedPlayers.Num()));*/
 
 
 		TArray<AActor*> OutTileController;
@@ -127,7 +126,7 @@ void AGMGame::PlayerControllerReady()
 				UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawnController::StaticClass(), OutSpawnController);
 				if (OutSpawnController.Num() > 0)
 				{
-					if (ASpawnController* SpawnController = Cast<ASpawnController>(OutSpawnController[0]))
+					if (const ASpawnController* SpawnController = Cast<ASpawnController>(OutSpawnController[0]))
 					{
 						PlayerSpawns = SpawnController->GenerateSpawns(TileController);
 					}

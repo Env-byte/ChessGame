@@ -8,6 +8,9 @@
 #include "GameFramework/PlayerController.h"
 #include "PCGame.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTurnChange, bool, bThisPlayersTurn);
+
 /**
  * 
  */
@@ -30,8 +33,9 @@ protected:
 	void Server_ReadyToStart();
 	////////// Player Joining Game //////////
 
-	///
-
 public:
 	void OnTurnChange(bool bThisPlayersTurn);
+	
+	UPROPERTY(BlueprintReadWrite, Category=Event)
+	FOnTurnChange OnTurnChangeEvent;
 };
