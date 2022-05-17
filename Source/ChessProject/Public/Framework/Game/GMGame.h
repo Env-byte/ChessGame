@@ -7,40 +7,10 @@
 #include "GameFramework/GameMode.h"
 #include "GMGame.generated.h"
 
+struct FPlayerInfo;
+class APSGame;
 class APlayerSpawn;
 class APCGame;
-
-USTRUCT(BlueprintType)
-struct FPlayerInfo
-{
-	GENERATED_BODY()
-	FPlayerInfo(): PlayerController(nullptr), Team()
-	{
-	}
-
-	FPlayerInfo(APCGame* PlayerControllerIn, const ETeams TeamIn, const bool bIsFirstIn):
-		PlayerController(PlayerControllerIn), Team(TeamIn), bIsFirst(bIsFirstIn)
-	{
-	}
-
-	/**
-	 * The player controller for this player, this will be null if replicated to a player that doesn't own the controller
-	 */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	APCGame* PlayerController;
-
-	/**
-	 * Which team this player belongs too
-	 */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	ETeams Team;
-
-	/**
-	 * Whether this player is going first or second
-	 */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	bool bIsFirst = false;
-};
 
 /**
  * 
@@ -52,13 +22,13 @@ class CHESSPROJECT_API AGMGame : public AGameMode
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TArray<FPlayerInfo> ConnectedPlayers;
+	TArray<APSGame*> ConnectedPlayers;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TMap<ETeams, APlayerSpawn*> PlayerSpawns;
 public:
 	UFUNCTION(BlueprintCallable)
-	FPlayerInfo GetConnectedPlayer(ETeams Team);
+	void GetConnectedPlayer(ETeams Team, FPlayerInfo& PlayerInfoOut);
 
 	virtual void BeginPlay() override;
 protected:

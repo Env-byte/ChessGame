@@ -2,6 +2,8 @@
 
 
 #include "World/ChessPiece.h"
+
+#include "Components/PieceMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
@@ -10,8 +12,13 @@ AChessPiece::AChessPiece()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+
 	ChessPieceMesh = CreateDefaultSubobject<UStaticMeshComponent>("ChessPieceMesh");
 	PivotOffsetComponent = CreateDefaultSubobject<USceneComponent>("PivotOffset");
+
+	PieceMovementComponent = CreateDefaultSubobject<UPieceMovementComponent>("PieceMovementComponent");
+	SelectedPieceComponent = CreateDefaultSubobject<USelectedPieceComponent>("SelectedPieceComponent");
+	
 	SetRootComponent(PivotOffsetComponent);
 	ChessPieceMesh->SetupAttachment(PivotOffsetComponent);
 	bReplicates = true;
@@ -50,7 +57,6 @@ AChessPiece* AChessPiece::StartSpawnActor(const AActor* Owner, const TSubclassOf
 void AChessPiece::FinishSpawn(const FTransform& Transform)
 {
 	UGameplayStatics::FinishSpawningActor(this, Transform);
-
 }
 
 // Called when the game starts or when spawned

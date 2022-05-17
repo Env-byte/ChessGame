@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "ChessProject/ChessProject.h"
+#include "Components/SelectedPieceComponent.h"
 #include "GameFramework/Actor.h"
 #include "ChessPiece.generated.h"
 
+class UPieceMovementComponent;
 UENUM(BlueprintType)
 enum class EPieceTypes : uint8
 {
@@ -20,7 +22,7 @@ enum class EPieceTypes : uint8
 };
 
 UCLASS(Abstract)
-class CHESSPROJECT_API AChessPiece : public AActor
+class CHESSPROJECT_API AChessPiece final : public AActor
 {
 	GENERATED_BODY()
 
@@ -41,13 +43,32 @@ public:
 	EPieceTypes PieceType = EPieceTypes::None;
 
 	/**
+	 * This controls the movement of the chess piece
+	 * also used to display the movement by changing the tile colours
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Components)
+	UPieceMovementComponent* PieceMovementComponent;
+
+	/**
+	* This Component is used to display which chess piece is currently selected
+	* 
+	*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Components)
+	USelectedPieceComponent* SelectedPieceComponent;
+
+	/**
 	 * This is needed to replicate the property ChessPawn
 	 */
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-
+	/**
+	 * Used to start spawning this chess piece
+	 */
 	static AChessPiece* StartSpawnActor(const AActor* Owner, TSubclassOf<AChessPiece> ChessPawnClass);
 
+	/**
+	 * This is used to finalise the spawn after setting default values
+	 */
 	void FinishSpawn(const FTransform& Transform);
 
 

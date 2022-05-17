@@ -117,11 +117,14 @@ void ATileController::GenerateTile(const int32 Col, const int32 Row)
 	if (Team != ETeams::None)
 	{
 		//get chess piece and set the player controller as the owner of it for networking purposes
+		FPlayerInfo PlayerInfo;
+		GameMode->GetConnectedPlayer(Team, PlayerInfo);
 		ChessPiece = GetChessPiece(
-			GameMode->GetConnectedPlayer(Team).PlayerController,
+			PlayerInfo.PlayerController,
 			Col,
 			Row
 		);
+		PlayerInfo.ChessPieces.Add(ChessPiece);
 	}
 
 	if (ATile* Tile = ATile::StartSpawnActor(this, TileControllerSettings.TileClass); Tile != nullptr)

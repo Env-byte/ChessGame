@@ -13,18 +13,17 @@
 #include "World/TileController.h"
 
 
-FPlayerInfo AGMGame::GetConnectedPlayer(const ETeams Team)
+void AGMGame::GetConnectedPlayer(const ETeams Team, FPlayerInfo& PlayerInfoOut)
 {
-	if (ConnectedPlayers[0].Team == Team)
+	if (ConnectedPlayers[0]->PlayerInfo.Team == Team)
 	{
-		return ConnectedPlayers[0];
+		PlayerInfoOut = ConnectedPlayers[0]->PlayerInfo;
 	}
 	//this is only false in play in editor with only one instance
-	if (ConnectedPlayers.IsValidIndex(1))
+	if (ConnectedPlayers.IsValidIndex(1) && ConnectedPlayers[1])
 	{
-		return ConnectedPlayers[1];
+		PlayerInfoOut= ConnectedPlayers[1]->PlayerInfo;
 	}
-	return ConnectedPlayers[0];
 }
 
 void AGMGame::BeginPlay()
@@ -64,11 +63,10 @@ void AGMGame::HandlePlayerJoin(APCGame* PlayerController)
 	}
 	else
 	{
-		PlayerInfo = FPlayerInfo(PlayerController, ETeams::Red, !ConnectedPlayers[0].bIsFirst);
+		PlayerInfo = FPlayerInfo(PlayerController, ETeams::Red, !ConnectedPlayers[0]->PlayerInfo.bIsFirst);
 	}
-
-	ConnectedPlayers.Add(PlayerInfo);
 	PS->PlayerInfo = PlayerInfo;
+	ConnectedPlayers.Add(PS);
 	//start match if it has not already started
 	if (!HasMatchStarted())
 	{
@@ -134,12 +132,12 @@ void AGMGame::PlayerControllerReady()
 			}
 		}
 
-		for (const FPlayerInfo ConnectedPlayer : ConnectedPlayers)
+		for (const APSGame* ConnectedPlayer : ConnectedPlayers)
 		{
-			BP_SpawnPlayerCamera(ConnectedPlayer);
-			if (ConnectedPlayer.bIsFirst)
+			BP_SpawnPlayerCamera(ConnectedPlayer->PlayerInfo);
+			if (ConnectedPlayer->PlayerInfo.bIsFirst)
 			{
-				GetGameState<AGSGame>()->SetPlayerTurn(ConnectedPlayer);
+				GetGameState<AGSGame>()->SetPlayerTurn(ConnectedPlayer->PlayerInfo);
 			}
 		}
 	}

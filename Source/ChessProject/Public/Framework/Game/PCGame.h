@@ -33,6 +33,11 @@ protected:
 	void Server_ReadyToStart();
 	////////// Player Joining Game //////////
 
+	////////// Select //////////
+	void OnSelect();
+	////////// Select //////////
+
+	virtual void SetupInputComponent() override;
 public:
 	void OnTurnChange(bool bThisPlayersTurn);
 	
