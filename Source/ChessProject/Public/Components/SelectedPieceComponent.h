@@ -16,6 +16,8 @@ class CHESSPROJECT_API USelectedPieceComponent : public UWidgetComponent
 
 	USelectedPieceComponent();
 public:
+
+	virtual void BeginPlay() override;
 	void Show();
 	void Hide();
 };

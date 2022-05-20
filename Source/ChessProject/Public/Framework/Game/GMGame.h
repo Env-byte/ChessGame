@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PSGame.h"
 #include "ChessProject/ChessProject.h"
 #include "GameFramework/GameMode.h"
 #include "GMGame.generated.h"
 
-struct FPlayerInfo;
 class APSGame;
 class APlayerSpawn;
 class APCGame;

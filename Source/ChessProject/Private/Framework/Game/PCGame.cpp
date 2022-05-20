@@ -46,7 +46,23 @@ void APCGame::OnSelect()
 		if (APSGame* PSGame = GetPlayerState<APSGame>(); ChessPiece->Team == PSGame->PlayerInfo.Team)
 		{
 			PSGame->SetSelectedPiece(ChessPiece);
+			static const UEnum* EPieceTypesEnumType = FindObject<UEnum>(ANY_PACKAGE, TEXT("EPieceTypes"));
+			FString Msg = FString::Printf(
+				TEXT("Selected %s"),
+				*EPieceTypesEnumType->GetNameStringByIndex(static_cast<int32>(ChessPiece->PieceType)));
+
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, Msg);
 		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow,
+			                                 FString::Printf(TEXT("!  ChessPiece->Team == PSGame->PlayerInfo.Team")));
+		}
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow,
+		                                 FString::Printf(TEXT("! ChessPiece")));
 	}
 }
 
@@ -55,6 +71,7 @@ void APCGame::SetupInputComponent()
 	Super::SetupInputComponent();
 
 	InputComponent->BindAction("Select", IE_Pressed, this, &APCGame::OnSelect);
+	SetShowMouseCursor(true);
 }
 
 
