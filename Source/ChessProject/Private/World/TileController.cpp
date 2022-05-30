@@ -117,14 +117,14 @@ void ATileController::GenerateTile(const int32 Col, const int32 Row)
 	if (Team != ETeams::None)
 	{
 		//get chess piece and set the player controller as the owner of it for networking purposes
-		FPlayerInfo PlayerInfo;
-		GameMode->GetConnectedPlayer(Team, PlayerInfo);
+
+		APSGame* PS = GameMode->GetConnectedPlayer(Team);
 		ChessPiece = GetChessPiece(
-			PlayerInfo.PlayerController,
+			PS->PlayerInfo.PlayerController,
 			Col,
 			Row
 		);
-		PlayerInfo.ChessPieces.Add(ChessPiece);
+		PS->PlayerInfo.ChessPieces.Add(ChessPiece);
 	}
 
 	if (ATile* Tile = ATile::StartSpawnActor(this, TileControllerSettings.TileClass); Tile != nullptr)
@@ -138,7 +138,7 @@ void ATileController::GenerateTile(const int32 Col, const int32 Row)
 		Transform.SetLocation(FVector(TileControllerSettings.Width * Col,
 		                              TileControllerSettings.Width * Row, 0.f));
 		Tile->FinishSpawn(Transform);
-		Tiles.Add(Tile);
+		Tiles[Row].Add(Tile);
 		if (ChessPiece && HasAuthority())
 		{
 			//this will only happen on server
@@ -151,40 +151,7 @@ void ATileController::GenerateTile(const int32 Col, const int32 Row)
 			Transform.SetLocation(FVector(TileControllerSettings.Width * Col,
 			                              TileControllerSettings.Width * Row, 50.f));
 			ChessPiece->FinishSpawn(Transform);
+			
 		}
-	}
-}
-
-void ATileController::ShowTile(ATile* Tile)
-{
-	Tile->SetActorHiddenInGame(false);
-	if (AChessPiece* ChessPiece = Tile->GetChessPiece())
-	{
-		ChessPiece->SetActorHiddenInGame(false);
-	}
-}
-
-void ATileController::Multicast_ShowTiles_Implementation()
-{
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, FString::Printf(TEXT("MultiCast %d"), GPlayInEditorID));
-
-	for (int32 i = 0, Length = Tiles.Num(); i < Length; i++)
-	{
-		if (!IsValid(Tiles[i])) { return; }
-		FTimerManager& TimerManager = GetWorld()->GetTimerManager();
-		/**
-		 * Call local method with params using a timer
-		 * Need to be really careful with lambdas as the i variable is out of scope
-		 * before the lambda is executed resulting in unknown potential values of i
-		 * using = in the capture means its copying the value
-		 * using & means its using a pointer to the value (this is not recommeneded for the reason stated above about scope)
-		 */
-		TimerManager.SetTimer(
-			Handle,
-			[=] { ShowTile(Tiles[i]); },
-			i * TimerScale,
-			true,
-			0.f
-		);
 	}
 }

@@ -13,17 +13,18 @@
 #include "World/TileController.h"
 
 
-void AGMGame::GetConnectedPlayer(const ETeams Team, FPlayerInfo& PlayerInfoOut)
+APSGame* AGMGame::GetConnectedPlayer(const ETeams Team)
 {
 	if (ConnectedPlayers[0]->PlayerInfo.Team == Team)
 	{
-		PlayerInfoOut = ConnectedPlayers[0]->PlayerInfo;
+		return ConnectedPlayers[0];
 	}
 	//this is only false in play in editor with only one instance
 	if (ConnectedPlayers.IsValidIndex(1) && ConnectedPlayers[1])
 	{
-		PlayerInfoOut= ConnectedPlayers[1]->PlayerInfo;
+		return  ConnectedPlayers[1];
 	}
+	return nullptr;
 }
 
 void AGMGame::BeginPlay()
@@ -85,33 +86,21 @@ void AGMGame::PlayerControllerReady()
 	int32 NumPIEClients = 0;
 	//make sure game can start with only one client on play instance editor
 #if WITH_EDITOR
-	if (GEditor->IsPlaySessionRequestQueued())
+	if (GEditor && GEditor->IsPlaySessionRequestQueued())
 	{
 		GEditor->GetPlaySessionRequest()->EditorPlaySettings->GetPlayNumberOfClients(NumPIEClients);
 	}
-	else if (GEditor->IsPlaySessionInProgress())
+	else if (GEditor && GEditor->IsPlaySessionInProgress())
 	{
 		NumPIEClients = GEditor->GetPlayInEditorSessionInfo()->PIEInstanceCount;
 	}
 #endif
 
-	/*GEngine->AddOnScreenDebugMessage(
-		-1,
-		10.f,
-		FColor::Yellow,
-		FString::Printf(TEXT("PIEInstanceCount : %d"),
-		                NumPIEClients
-		)
-	);*/
+
 
 	if (ReadyPlayers == 2 || NumPIEClients == ReadyPlayers)
 	{
 		//start game loop here
-
-		/*GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow,
-		                                 FString::Printf(TEXT("ConnectedPlayers : %d"), ConnectedPlayers.Num()));*/
-
-
 		TArray<AActor*> OutTileController;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATileController::StaticClass(), OutTileController);
 

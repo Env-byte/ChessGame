@@ -8,16 +8,18 @@
 
 void APSGame::OnRep_SelectedPiece()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow,
+	                                 FString::Printf(TEXT("PlayerInfo.ChessPieces %d"), PlayerInfo.ChessPieces.Num()));
+
 	for (const AChessPiece* ChessPiece : PlayerInfo.ChessPieces)
 	{
 		ChessPiece->SelectedPieceComponent->Hide();
 		ChessPiece->PieceMovementComponent->HideMoves();
 	}
-	
+
 	if (IsValid(SelectedPiece))
 	{
 		SelectedPiece->SelectedPieceComponent->Show();
-		//only show piece movement for the local player
 		if (IsValid(GetOwningController()))
 		{
 			SelectedPiece->PieceMovementComponent->ShowMoves();
@@ -45,14 +47,19 @@ void APSGame::Server_SetSelectedPiece_Implementation(AChessPiece* ChessPiece)
 
 void APSGame::SetSelectedPiece(AChessPiece* ChessPiece)
 {
+	const bool bHasChanged = ChessPiece != SelectedPiece;
 	if (IsValid(ChessPiece))
 	{
 		SelectedPiece = ChessPiece;
 	}
-	OnRep_SelectedPiece();
+
 	if (!HasAuthority())
 	{
 		Server_SetSelectedPiece(ChessPiece);
+	}
+	if (bHasChanged)
+	{
+		OnRep_SelectedPiece();
 	}
 }
 

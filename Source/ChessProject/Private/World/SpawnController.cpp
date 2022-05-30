@@ -24,39 +24,42 @@ TMap<ETeams, APlayerSpawn*> ASpawnController::GenerateSpawns(ATileController* Ti
 	}
 
 	TMap<ETeams, APlayerSpawn*> PlayerSpawns;
-	for (const ATile* Tile : TileController->GetTiles())
+	for (auto& [Ar] : TileController->GetTiles())
 	{
-		if ((Tile->TileInfo.Row == 0 || TileController->TileControllerSettings.Rows - 1 == Tile->TileInfo.Row) &&
-			PlayerSpawns.Find(Tile->TileInfo.Team) == nullptr)
+		for (const ATile* Tile : Ar)
 		{
-			APlayerSpawn* PlayerSpawn = APlayerSpawn::StartSpawnActor(this, SpawnerClass);
-			PlayerSpawn->Team = Tile->TileInfo.Team;
-			FTransform Transform;;
-
-
-			const float X = (TileController->TileControllerSettings.Cols - 1)
-			* TileController->TileControllerSettings.Width / 2;
-			float Y;
-			FQuat Quat;
-
-			if (Tile->TileInfo.Row == 0)
+			if ((Tile->TileInfo.Row == 0 || TileController->TileControllerSettings.Rows - 1 == Tile->TileInfo.Row) &&
+				PlayerSpawns.Find(Tile->TileInfo.Team) == nullptr)
 			{
-				Quat = FQuat::MakeFromRotator(FRotator{-45.f, 90.f, 0.f});
-				Y = Tile->GetActorLocation().Y - TileController->TileControllerSettings.Width * 2;
+				APlayerSpawn* PlayerSpawn = APlayerSpawn::StartSpawnActor(this, SpawnerClass);
+				PlayerSpawn->Team = Tile->TileInfo.Team;
+				FTransform Transform;;
+
+
+				const float X = (TileController->TileControllerSettings.Cols - 1)
+					* TileController->TileControllerSettings.Width / 2;
+				float Y;
+				FQuat Quat;
+
+				if (Tile->TileInfo.Row == 0)
+				{
+					Quat = FQuat::MakeFromRotator(FRotator{-45.f, 90.f, 0.f});
+					Y = Tile->GetActorLocation().Y - TileController->TileControllerSettings.Width * 2;
+				}
+				else
+				{
+					Quat = FQuat::MakeFromRotator(FRotator{-45.f, 270.f, 0.f});
+					Y = Tile->GetActorLocation().Y + TileController->TileControllerSettings.Width * 2;
+				}
+				Transform.SetRotation(Quat);
+				Transform.SetLocation(FVector(X, Y, GetActorLocation().Z));
+				PlayerSpawn->FinishSpawn(Transform);
+				PlayerSpawns.Add(Tile->TileInfo.Team, PlayerSpawn);
 			}
-			else
+			if (PlayerSpawns.Find(ETeams::Blue) != nullptr && PlayerSpawns.Find(ETeams::Red) != nullptr)
 			{
-				Quat = FQuat::MakeFromRotator(FRotator{-45.f, 270.f, 0.f});
-				Y = Tile->GetActorLocation().Y + TileController->TileControllerSettings.Width * 2;
+				break;
 			}
-			Transform.SetRotation(Quat);
-			Transform.SetLocation(FVector(X,Y,GetActorLocation().Z));
-			PlayerSpawn->FinishSpawn(Transform);
-			PlayerSpawns.Add(Tile->TileInfo.Team, PlayerSpawn);
-		}
-		if (PlayerSpawns.Find(ETeams::Blue) != nullptr && PlayerSpawns.Find(ETeams::Red) != nullptr)
-		{
-			break;
 		}
 	}
 

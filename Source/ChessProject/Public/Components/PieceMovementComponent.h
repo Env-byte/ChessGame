@@ -5,15 +5,16 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "World/ChessPiece.h"
+#include "World/Tile.h"
 #include "PieceMovementComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class CHESSPROJECT_API UPieceMovementComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	// Sets default values for this component's properties
 	UPieceMovementComponent();
 
@@ -22,11 +23,16 @@ protected:
 	virtual void BeginPlay() override;
 
 	// The type of piece this determines the movement available
-	UPROPERTY(EditDefaultsOnly,Category=Type)
-	EPieceTypes Type;
+	UPROPERTY(EditDefaultsOnly, Category=Type)
+	AChessPiece* ChessPiece;
 
-public:	
+	/**
+	 * Store all of the tiles that can be moved to
+	 */
+	UPROPERTY(BlueprintReadOnly)
+	TArray<ATile*> PossibleMoves;
+public:
 	void ShowMoves();
-	
+
 	void HideMoves();
 };

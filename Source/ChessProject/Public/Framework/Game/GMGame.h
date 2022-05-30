@@ -28,7 +28,7 @@ protected:
 	TMap<ETeams, APlayerSpawn*> PlayerSpawns;
 public:
 	UFUNCTION(BlueprintCallable)
-	void GetConnectedPlayer(ETeams Team, FPlayerInfo& PlayerInfoOut);
+	APSGame* GetConnectedPlayer(ETeams Team);
 
 	virtual void BeginPlay() override;
 protected:

@@ -85,6 +85,12 @@ public:
 	void SetChessPiece(AChessPiece* Pawn);
 
 	FORCEINLINE AChessPiece* GetChessPiece() const { return ChessPiece; }
+
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void BP_AddHighlight();
+
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void BP_RemoveHighlight();
 private:
 	/**
 	 * Makes a call to the server to execute SetChessPawn

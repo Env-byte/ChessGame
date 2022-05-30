@@ -33,6 +33,22 @@ struct FTileControllerSettings
 	TSubclassOf<ATile> TileClass;
 };
 
+USTRUCT()
+struct FTile2DArray{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	TArray<ATile*> Ar;
+
+	ATile* operator[] (const int32 Index) {
+		return Ar[Index];
+	}
+
+	void Add(ATile* Tile) {
+		Ar.Add(Tile);
+	}
+};
+
 UCLASS()
 class CHESSPROJECT_API ATileController : public AActor
 {
@@ -52,8 +68,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(BlueprintReadWrite, Category="Tiles", Replicated)
-	TArray<ATile*> Tiles;
+	UPROPERTY( Replicated)
+	TArray<FTile2DArray> Tiles;
 
 	/////////////// Defer Spawn ///////////////
 	/**
@@ -66,13 +82,8 @@ public:
 	FTileControllerSettings TileControllerSettings;
 
 	void GenerateTiles();
-	/** 
-	 * Called From Server to show tiles on all connected clients
-	*/
-	UFUNCTION(NetMulticast, Reliable)
-	void Multicast_ShowTiles();
 
-	FORCEINLINE TArray<ATile*>& GetTiles() { return Tiles; }
+	FORCEINLINE TArray<FTile2DArray> GetTiles() { return Tiles; }
 
 protected:
 	AChessPiece* GetChessPiece(const APCGame* PlayerController, int32 Col, int32 Row);
@@ -81,14 +92,7 @@ protected:
 	 * Generate Tile
 	 */
 	void GenerateTile(int32 Col, int32 Row);
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=SpawnTime)
-	float TimerScale = 0.005f;
-
-	FTimerHandle Handle;
-
-	void ShowTile(ATile* Tile);
-
+	
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_OnTilesSpawned();
 	/////////////// Defer Spawn ///////////////

@@ -21,6 +21,7 @@ AChessPiece::AChessPiece()
 	
 	SetRootComponent(PivotOffsetComponent);
 	ChessPieceMesh->SetupAttachment(PivotOffsetComponent);
+	SelectedPieceComponent->SetupAttachment(PivotOffsetComponent);
 	bReplicates = true;
 	SetHidden(true);
 }
@@ -30,6 +31,7 @@ void AChessPiece::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AChessPiece, Team);
 	DOREPLIFETIME(AChessPiece, PieceType);
+	DOREPLIFETIME(AChessPiece, Tile);
 }
 
 AChessPiece* AChessPiece::StartSpawnActor(const AActor* Owner, const TSubclassOf<AChessPiece> ChessPawnClass)
@@ -77,5 +79,9 @@ void AChessPiece::OnRep_Team()
 }
 
 void AChessPiece::OnRep_PieceType()
+{
+}
+
+void AChessPiece::OnRep_Tile()
 {
 }

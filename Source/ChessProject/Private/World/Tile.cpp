@@ -81,6 +81,9 @@ void ATile::SetChessPiece(AChessPiece* Pawn)
 	{
 		//this is server
 		//we can validated the move here and correct inconsistency using OnRep_ChessPawn
+
+		//let the chess piece know which tile its on
+		Pawn->Tile = this;
 	}
 	ChessPiece = Pawn;
 }

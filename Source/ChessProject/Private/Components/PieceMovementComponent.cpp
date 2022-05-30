@@ -22,9 +22,9 @@ void UPieceMovementComponent::BeginPlay()
 
 	if (AActor* ActorAttachedTo = GetOwner(); IsValid(ActorAttachedTo))
 	{
-		if (const AChessPiece* ChessPiece = Cast<AChessPiece>(ActorAttachedTo); IsValid(ChessPiece))
+		if (AChessPiece* AttachedChessPiece = Cast<AChessPiece>(ActorAttachedTo); IsValid(ChessPiece))
 		{
-			Type = ChessPiece->PieceType;
+			this->ChessPiece = AttachedChessPiece;
 		}
 	}
 }
@@ -33,6 +33,32 @@ void UPieceMovementComponent::BeginPlay()
 void UPieceMovementComponent::ShowMoves()
 {
 	Activate();
+	FTileInfo CurrentTile = ChessPiece->Tile->TileInfo;
+
+	switch (ChessPiece->PieceType)
+	{
+	case EPieceTypes::None:
+
+		break;
+	case EPieceTypes::Knight:
+
+		break;
+	case EPieceTypes::Pawn:
+
+		break;
+	case EPieceTypes::Queen:
+
+		break;
+	case EPieceTypes::King:
+
+		break;
+	case EPieceTypes::Rook:
+
+		break;
+	case EPieceTypes::Bishop:
+		 
+		break;
+	}
 }
 
 void UPieceMovementComponent::HideMoves()

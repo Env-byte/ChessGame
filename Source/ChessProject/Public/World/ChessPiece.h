@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Tile.h"
 #include "ChessProject/ChessProject.h"
 #include "Components/SelectedPieceComponent.h"
 #include "GameFramework/Actor.h"
@@ -71,6 +72,8 @@ public:
 	 */
 	void FinishSpawn(const FTransform& Transform);
 
+	UPROPERTY(ReplicatedUsing=OnRep_Tile)
+	ATile* Tile;
 
 protected:
 	// Called when the game starts or when spawned
@@ -86,4 +89,6 @@ protected:
 	void OnRep_Team();
 	UFUNCTION()
 	void OnRep_PieceType();
+	UFUNCTION()
+	void OnRep_Tile();
 };
