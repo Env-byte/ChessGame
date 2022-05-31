@@ -83,7 +83,7 @@ public:
 
 	void GenerateTiles();
 
-	FORCEINLINE TArray<FTile2DArray> GetTiles() { return Tiles; }
+	 ATile* GetTile(int32 Row, int32 Col);
 
 protected:
 	AChessPiece* GetChessPiece(const APCGame* PlayerController, int32 Col, int32 Row);

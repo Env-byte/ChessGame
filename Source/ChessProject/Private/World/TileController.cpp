@@ -90,12 +90,22 @@ void ATileController::GenerateTiles()
 
 	for (int32 Row = 0; Row < TileControllerSettings.Rows; Row++)
 	{
+		Tiles.Add(FTile2DArray());
 		for (int32 Col = 0; Col < TileControllerSettings.Cols; Col++)
 		{
 			GenerateTile(Col, Row);
 		}
 	}
 	ControllerState = Finished;
+}
+
+ATile* ATileController::GetTile(const int32 Row, const int32 Col)
+{
+	if (Tiles.IsValidIndex(Row) && Tiles[Row].Ar.IsValidIndex(Col))
+	{
+		return Tiles[Row][Col];
+	}
+	return nullptr;
 }
 
 void ATileController::GenerateTile(const int32 Col, const int32 Row)
@@ -138,7 +148,9 @@ void ATileController::GenerateTile(const int32 Col, const int32 Row)
 		Transform.SetLocation(FVector(TileControllerSettings.Width * Col,
 		                              TileControllerSettings.Width * Row, 0.f));
 		Tile->FinishSpawn(Transform);
+
 		Tiles[Row].Add(Tile);
+
 		if (ChessPiece && HasAuthority())
 		{
 			//this will only happen on server
@@ -151,7 +163,6 @@ void ATileController::GenerateTile(const int32 Col, const int32 Row)
 			Transform.SetLocation(FVector(TileControllerSettings.Width * Col,
 			                              TileControllerSettings.Width * Row, 50.f));
 			ChessPiece->FinishSpawn(Transform);
-			
 		}
 	}
 }
