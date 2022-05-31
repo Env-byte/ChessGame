@@ -17,10 +17,13 @@ class CHESSPROJECT_API AGSGame : public AGameState
 
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
-	
+
 	void SetPlayerTurn(const FPlayerInfo& PlayerInfo);
 
+	FORCEINLINE ETeams GetPlayerTurn() const { return PlayerTurn; };
+
 	virtual void BeginPlay() override;
+
 protected:
 	UPROPERTY(ReplicatedUsing=OnRep_PlayerTurn)
 	ETeams PlayerTurn = ETeams::None;

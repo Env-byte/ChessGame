@@ -3,6 +3,7 @@
 
 #include "World/Tile.h"
 
+#include "Framework/Game/GMGame.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "World/ChessPiece.h"
@@ -24,6 +25,12 @@ void ATile::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePro
 	DOREPLIFETIME(ATile, ChessPiece);
 	DOREPLIFETIME(ATile, TileInfo);
 	DOREPLIFETIME(ATile, TileController);
+	DOREPLIFETIME(ATile, CanMoveTo);
+}
+
+void ATile::SetCanMoveTo(const bool bCond)
+{
+	CanMoveTo = bCond;
 }
 
 ATile* ATile::StartSpawnActor(const AActor* Owner, const TSubclassOf<ATile> TileClass)
@@ -50,7 +57,6 @@ ATile* ATile::StartSpawnActor(const AActor* Owner, const TSubclassOf<ATile> Tile
 void ATile::FinishSpawn(const FTransform& Transform)
 {
 	UGameplayStatics::FinishSpawningActor(this, Transform);
-
 }
 
 // Called when the game starts or when spawned
@@ -81,11 +87,19 @@ void ATile::SetChessPiece(AChessPiece* Pawn)
 	{
 		//this is server
 		//we can validated the move here and correct inconsistency using OnRep_ChessPawn
-
 		//let the chess piece know which tile its on
-		Pawn->Tile = this;
+		AGMGame* GM = GetWorld()->GetAuthGameMode<AGMGame>();
+		if (CanMoveTo || GM->bGameStarted == false)
+		{
+			Pawn->Tile = this;
+			ChessPiece = Pawn;
+			if (GM->bGameStarted)
+			{
+				ChessPiece->SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, 50.f));
+				GM->ChangeTurns();
+			}
+		}
 	}
-	ChessPiece = Pawn;
 }
 
 void ATile::Server_SetChessPiece_Implementation(AChessPiece* Pawn)

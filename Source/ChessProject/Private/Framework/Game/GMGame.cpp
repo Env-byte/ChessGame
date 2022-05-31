@@ -35,6 +35,13 @@ void AGMGame::BeginPlay()
 #endif
 }
 
+void AGMGame::ChangeTurns()
+{
+	const ETeams CurrentTurn = GetGameState<AGSGame>()->GetPlayerTurn();
+	const APSGame* NextTurn = GetConnectedPlayer(CurrentTurn == ETeams::Blue ? ETeams::Red : ETeams::Blue);
+	GetGameState<AGSGame>()->SetPlayerTurn(NextTurn->PlayerInfo);
+}
+
 void AGMGame::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
@@ -110,7 +117,7 @@ void AGMGame::PlayerControllerReady()
 			}
 		}
 
-
+		bGameStarted = true;
 		for (const APSGame* ConnectedPlayer : ConnectedPlayers)
 		{
 			BP_SpawnPlayerCamera(ConnectedPlayer->PlayerInfo);

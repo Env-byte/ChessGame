@@ -33,23 +33,15 @@ void UPieceMovementComponent::BeginPlay()
 
 void UPieceMovementComponent::ShowMoves()
 {
-	ATileController* TileController = ATileController::Get(GetWorld());
+	if (!ChessPiece->HasAuthority())
+	{
+		Server_ShowMoves();
+	}
 
-	if (!IsValid(TileController))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString(TEXT("!IsValid(TileController)")));
-		return;
-	}
-	if (!IsValid(ChessPiece))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString(TEXT("!IsValid(ChessPiece)")));
-		return;
-	}
+	ATileController* TileController = ATileController::Get(GetWorld());
 	Activate();
 	HideMoves();
-
 	const FTileInfo CurrentTile = ChessPiece->Tile->TileInfo;
-
 	switch (ChessPiece->PieceType)
 	{
 	case EPieceTypes::None:
@@ -75,20 +67,41 @@ void UPieceMovementComponent::ShowMoves()
 		break;
 	}
 
+	const APlayerController* PC = ChessPiece->GetNetOwningPlayer()->GetPlayerController(GetWorld());
+	const bool HighlightTile = PC && PC->IsLocalController();
 	for (ATile* Tile : PossibleMoves)
 	{
-		Tile->BP_AddHighlight();
+		Tile->SetCanMoveTo(true);
+		if (HighlightTile)
+		{
+			Tile->BP_AddHighlight();
+		}
 	}
 }
 
 void UPieceMovementComponent::HideMoves()
 {
+	if (!ChessPiece->HasAuthority())
+	{
+		Server_HideMoves();
+	}
 	for (ATile* Tile : PossibleMoves)
 	{
+		Tile->SetCanMoveTo(false);
 		Tile->BP_RemoveHighlight();
 	}
 	PossibleMoves.Empty();
 	Deactivate();
+}
+
+void UPieceMovementComponent::Server_ShowMoves_Implementation()
+{
+	ShowMoves();
+}
+
+void UPieceMovementComponent::Server_HideMoves_Implementation()
+{
+	HideMoves();
 }
 
 void UPieceMovementComponent::BishopMoves(const FTileInfo CurrentTile, ATileController* TileController)
@@ -267,7 +280,7 @@ void UPieceMovementComponent::KnightMoves(const FTileInfo CurrentTile, ATileCont
 		}
 		for (int X = 0; X < 2; X++)
 		{
-			int32 Op = 0;
+			int32 Op;
 			if (X == 0)
 			{
 				Op = + 1;

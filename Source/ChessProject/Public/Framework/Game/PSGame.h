@@ -60,13 +60,15 @@ protected:
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
+	FORCEINLINE AChessPiece* GetSelectedPiece() const { return SelectedPiece; };
+
 protected:
 	UFUNCTION(Server, Reliable)
 	void Server_SetSelectedPiece(AChessPiece* ChessPiece);
-	
+
 public:
 	UFUNCTION()
-	void SetSelectedPiece( AChessPiece* ChessPiece);
+	void SetSelectedPiece(AChessPiece* ChessPiece);
 
 	UPROPERTY(BlueprintReadOnly, Replicated)
 	FPlayerInfo PlayerInfo;

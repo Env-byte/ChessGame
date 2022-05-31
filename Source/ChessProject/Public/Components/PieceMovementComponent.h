@@ -35,8 +35,13 @@ public:
 	void ShowMoves();
 
 	void HideMoves();
-	
+
 protected:
+	UFUNCTION(Reliable, Server)
+	void Server_ShowMoves();
+	UFUNCTION(Reliable, Server)
+	void Server_HideMoves();
+
 	void BishopMoves(FTileInfo CurrentTile, ATileController* TileController);
 	void RookMoves(FTileInfo CurrentTile, ATileController* TileController);
 	void KingMoves(FTileInfo CurrentTile, ATileController* TileController);

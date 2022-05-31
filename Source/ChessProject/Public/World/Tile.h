@@ -48,6 +48,8 @@ public:
 	 */
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	void SetCanMoveTo(bool bCond);
+
 	static ATile* StartSpawnActor(const AActor* Owner, TSubclassOf<ATile> TileClass);
 
 	void FinishSpawn(const FTransform& Transform);
@@ -57,6 +59,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
 	FTileInfo TileInfo;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -74,6 +77,9 @@ protected:
 	 */
 	UFUNCTION()
 	void OnRep_ChessPiece();
+
+	UPROPERTY(Replicated)
+	bool CanMoveTo;
 public:
 	/**
 	 * Used to set the ChessPawn for this tile
@@ -85,10 +91,10 @@ public:
 	void SetChessPiece(AChessPiece* Pawn);
 
 	FORCEINLINE AChessPiece* GetChessPiece() const { return ChessPiece; }
-
+	
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void BP_AddHighlight();
-
+	
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void BP_RemoveHighlight();
 private:

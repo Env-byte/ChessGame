@@ -31,6 +31,12 @@ public:
 	APSGame* GetConnectedPlayer(ETeams Team);
 
 	virtual void BeginPlay() override;
+	/**
+	 * Once a move has been made change turns
+	 */
+	void ChangeTurns();
+
+	bool bGameStarted = false;
 protected:
 	////////// Players Joining //////////
 	int32 ReadyPlayers = 0;

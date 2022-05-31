@@ -40,14 +40,21 @@ void APCGame::OnSelect()
 	{
 		return;
 	}
-
+	APSGame* PSGame = GetPlayerState<APSGame>();
 	if (AChessPiece* ChessPiece = Cast<AChessPiece>(HitResult.GetActor()); IsValid(ChessPiece))
 	{
-		if (APSGame* PSGame = GetPlayerState<APSGame>(); ChessPiece->Team == PSGame->PlayerInfo.Team)
+		if (ChessPiece->Team == PSGame->PlayerInfo.Team)
 		{
 			PSGame->SetSelectedPiece(ChessPiece);
 		}
-		
+	}
+	else if (ATile* Tile = Cast<ATile>(HitResult.GetActor()); IsValid(Tile))
+	{
+		if (AChessPiece* SelectedChessPiece = PSGame->GetSelectedPiece(); IsValid(SelectedChessPiece))
+		{
+			Tile->SetChessPiece(SelectedChessPiece);
+			PSGame->SetSelectedPiece(nullptr);
+		}
 	}
 }
 

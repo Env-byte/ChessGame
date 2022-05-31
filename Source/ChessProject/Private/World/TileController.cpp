@@ -167,14 +167,14 @@ void ATileController::GenerateTile(const int32 Col, const int32 Row)
 		if (ChessPiece && HasAuthority())
 		{
 			//this will only happen on server
-			//this will replicate down to clients 
+			//this will replicate down to clients
 			Tile->SetChessPiece(ChessPiece);
 			ChessPiece->Team = Team;
 			Transform.SetRotation(Row == 0 || Row == 1
 				                      ? FQuat(0.f, 0.f, 180.f, 0.f)
 				                      : FQuat(0.f, 0.f, 0.f, 0.f));
-			Transform.SetLocation(FVector(TileControllerSettings.Width * Col,
-			                              TileControllerSettings.Width * Row, 50.f));
+			Transform.SetLocation(FVector(Tile->GetActorLocation().X,
+			                              Tile->GetActorLocation().Y, 50.f));
 			ChessPiece->FinishSpawn(Transform);
 		}
 	}
