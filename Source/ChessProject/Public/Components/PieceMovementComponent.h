@@ -35,4 +35,12 @@ public:
 	void ShowMoves();
 
 	void HideMoves();
+	
+protected:
+	void BishopMoves(FTileInfo CurrentTile, ATileController* TileController);
+	void RookMoves(FTileInfo CurrentTile, ATileController* TileController);
+	void KingMoves(FTileInfo CurrentTile, ATileController* TileController);
+	void QueenMoves(FTileInfo CurrentTile, ATileController* TileController);
+	void PawnMoves(FTileInfo CurrentTile, ATileController* TileController);
+	void KnightMoves(FTileInfo CurrentTile, ATileController* TileController);
 };

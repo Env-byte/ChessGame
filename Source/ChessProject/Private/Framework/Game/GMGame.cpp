@@ -22,7 +22,7 @@ APSGame* AGMGame::GetConnectedPlayer(const ETeams Team)
 	//this is only false in play in editor with only one instance
 	if (ConnectedPlayers.IsValidIndex(1) && ConnectedPlayers[1])
 	{
-		return  ConnectedPlayers[1];
+		return ConnectedPlayers[1];
 	}
 	return nullptr;
 }
@@ -97,29 +97,19 @@ void AGMGame::PlayerControllerReady()
 #endif
 
 
-
 	if (ReadyPlayers == 2 || NumPIEClients == ReadyPlayers)
 	{
 		//start game loop here
-		TArray<AActor*> OutTileController;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATileController::StaticClass(), OutTileController);
-
-		if (OutTileController.Num() > 0)
+		if (ATileController* TileController = ATileController::Get(GetWorld()); IsValid(TileController))
 		{
-			if (ATileController* TileController = Cast<ATileController>(OutTileController[0]))
+			TileController->GenerateTiles();
+
+			if (const ASpawnController* SpawnController = ASpawnController::Get(GetWorld()); IsValid(SpawnController))
 			{
-				TileController->GenerateTiles();
-				TArray<AActor*> OutSpawnController;
-				UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawnController::StaticClass(), OutSpawnController);
-				if (OutSpawnController.Num() > 0)
-				{
-					if (const ASpawnController* SpawnController = Cast<ASpawnController>(OutSpawnController[0]))
-					{
-						PlayerSpawns = SpawnController->GenerateSpawns(TileController);
-					}
-				}
+				PlayerSpawns = SpawnController->GenerateSpawns(TileController);
 			}
 		}
+
 
 		for (const APSGame* ConnectedPlayer : ConnectedPlayers)
 		{

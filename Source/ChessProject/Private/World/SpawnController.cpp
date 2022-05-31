@@ -3,6 +3,8 @@
 
 #include "World/SpawnController.h"
 
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 ASpawnController::ASpawnController()
 {
@@ -65,4 +67,15 @@ TMap<ETeams, APlayerSpawn*> ASpawnController::GenerateSpawns(ATileController* Ti
 	}
 
 	return PlayerSpawns;
+}
+
+ASpawnController* ASpawnController::Get(const UWorld* World)
+{
+	TArray<AActor*> OutSpawnController;
+	UGameplayStatics::GetAllActorsOfClass(World, StaticClass(), OutSpawnController);
+	if (OutSpawnController.Num() > 0)
+	{
+		return Cast<ASpawnController>(OutSpawnController[0]);
+	}
+	return nullptr;
 }

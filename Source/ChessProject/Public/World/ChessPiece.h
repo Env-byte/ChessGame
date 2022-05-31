@@ -75,7 +75,15 @@ public:
 	UPROPERTY(ReplicatedUsing=OnRep_Tile)
 	ATile* Tile;
 
+	FORCEINLINE int32 GetTimesMoved() const { return TimesMoved; }
+
 protected:
+	/**
+	 * Number of times this piece has been moved
+	 * 
+	 */
+	int32 TimesMoved = 0;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

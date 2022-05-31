@@ -28,4 +28,5 @@ public:
 	 * Generate Spawns using the size of the board to help guide where to place them
 	 */
 	TMap<ETeams, APlayerSpawn*> GenerateSpawns(ATileController* TileController) const;
+	static ASpawnController* Get(const UWorld* World);
 };

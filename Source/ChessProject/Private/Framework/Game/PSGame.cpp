@@ -8,9 +8,6 @@
 
 void APSGame::OnRep_SelectedPiece()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow,
-	                                 FString::Printf(TEXT("PlayerInfo.ChessPieces %d"), PlayerInfo.ChessPieces.Num()));
-
 	for (const AChessPiece* ChessPiece : PlayerInfo.ChessPieces)
 	{
 		ChessPiece->SelectedPieceComponent->Hide();
@@ -20,7 +17,9 @@ void APSGame::OnRep_SelectedPiece()
 	if (IsValid(SelectedPiece))
 	{
 		SelectedPiece->SelectedPieceComponent->Show();
-		if (IsValid(GetOwningController()))
+		//only local player needs to see movement
+		
+		if (IsValid(GetOwningController()) && GetOwningController()->IsLocalController())
 		{
 			SelectedPiece->PieceMovementComponent->ShowMoves();
 		}

@@ -6,6 +6,7 @@
 #include "Framework/GIChess.h"
 #include "Framework/Game/GMGame.h"
 #include "Framework/Game/PCGame.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "World/ChessPiece.h"
 #include "World/Tile.h"
@@ -104,6 +105,18 @@ ATile* ATileController::GetTile(const int32 Row, const int32 Col)
 	if (Tiles.IsValidIndex(Row) && Tiles[Row].Ar.IsValidIndex(Col))
 	{
 		return Tiles[Row][Col];
+	}
+	return nullptr;
+}
+
+ATileController* ATileController::Get(const UWorld* World)
+{
+	TArray<AActor*> OutTileController;
+	UGameplayStatics::GetAllActorsOfClass(World, StaticClass(), OutTileController);
+
+	if (OutTileController.Num() > 0)
+	{
+		return Cast<ATileController>(OutTileController[0]);
 	}
 	return nullptr;
 }

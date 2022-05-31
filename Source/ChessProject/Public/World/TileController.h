@@ -85,6 +85,7 @@ public:
 
 	 ATile* GetTile(int32 Row, int32 Col);
 
+	static ATileController* Get(const UWorld* World);
 protected:
 	AChessPiece* GetChessPiece(const APCGame* PlayerController, int32 Col, int32 Row);
 
